@@ -21,14 +21,24 @@
 # List application Arduino/chipKIT/Digispark/Energia/Maple/Microduino/Teensy/Wiring libraries here
 # default = 0 = none
 #
-APP_LIBS_LIST = 0
+# ARDUINO = EEPROM SoftwareSerial SPI Wire SPI Wire Audio 
+#	Bridge Esplora Ethernet Firmata GSM LiquidCrystal 
+#	Robot_Control Robot_Motor RobotIRremote Scheduler SD Servo 
+#	SpacebrewYun Stepper Temboo TFT USBHost WiFi 
+#
+APP_LIBS_LIST = SPI
 
 # List user's libraries here 
 # default = 0 = none
 #
+# USER = Adafruit_PWM_Servo_Driver CalLib DueFlash DumpMon 
+#	I2CDev MotionDriver MPU6050 MPU9150Lib MsTimer2 
+#	StandardCplusplus TMC26XStepper 
+#
 USER_LIBS_LIST = 0
 
-# List local libraries here# default = empty = all
+# List local libraries here
+# default = empty = all
 #
 LOCAL_LIBS_LIST =
 
@@ -36,6 +46,7 @@ LOCAL_LIBS_LIST =
 # For example, WiFi may crash on Arduino 1.0.2, Esplora on Arduino 1.0.3, Firmata on Teensy 3.0,
 #   OneWire on MPIDE 0023, HardwareSerial may conflict with MarlinSerial
 #
+EXCLUDE_LIBS = EEPROM SoftwareSerial Wire Audio Bridge Esplora Ethernet Firmata GSM LiquidCrystal Robot_Control Robot_Motor RobotIRremote Scheduler SD SpacebrewYun Stepper Temboo TFT USBHost WiFi Adafruit_GFX Fat16
 #EXCLUDE_LIBS = Firmata WiFi Esplora OneWire Robot_Control Robot_Control/utility Robot_Motor
 
 
@@ -65,7 +76,7 @@ APPLICATIONS_PATH = /Applications
 # = 0 or = empty or comment: open serial console
 # = 1: don't open serial console
 #
-NO_SERIAL_CONSOLE =
+NO_SERIAL_CONSOLE = 1
 
 
 # Teensy USB options
@@ -123,4 +134,5 @@ MAKEFILE_PATH  = $(CURRENT_DIR)/Makefiles
 UTILITIES_PATH = $(CURRENT_DIR)/Utilities
 
 include $(MAKEFILE_PATH)/Step1.mk
+
 
