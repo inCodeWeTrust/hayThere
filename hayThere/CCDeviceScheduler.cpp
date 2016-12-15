@@ -295,6 +295,14 @@ int CCDeviceScheduler::run(CCWorkflow* currentWorkflow) {
         
         for (unsigned int c = 0; c < currentWorkflow->getCountOfControls(); c++) {
             currentWorkflow->control[c]->read();
+            currentFlowControl->getControl()->read();
+            Serial.print("#### control: ");
+            Serial.print(currentWorkflow->control[c]->getName());
+            Serial.print(" has: ");
+            Serial.print(currentWorkflow->control[c]->value());
+            Serial.print("greater than: ");
+            Serial.println(currentFlowControl->getTarget());
+
         }
         
         
@@ -486,10 +494,14 @@ int CCDeviceScheduler::run(CCWorkflow* currentWorkflow) {
                 n++;
                 if (currentFlowControl->getName() == "repeatTurningControl") {
                     if (n > 100) {
-                        currentFlowControl->getControl()->setVerbosity(BASICOUTPUT);
+                        currentFlowControl->getControl()->read();
+                        Serial.print("#### repeatTurningControl's control: ");
+                        Serial.print(currentFlowControl->getControl()->getName());
+                        Serial.print(" has: ");
+                        Serial.print(currentFlowControl->getControl()->value());
+                        Serial.print("greater than: ");
+                        Serial.println(currentFlowControl->getTarget());
                         n = 0;
-                    } else {
-                        currentFlowControl->getControl()->setVerbosity(NO_OUTPUT);
                     }
                 }
                 if ((currentFlowControl->needsToFire())) {
