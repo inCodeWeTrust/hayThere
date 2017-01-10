@@ -25,6 +25,7 @@
 #include "CCControlButton.h"
 #include "CCControlSensor.h"
 #include "CCControlEvent.h"
+#include "CCControlReadOut.h"
 
 
 
@@ -154,8 +155,9 @@ public:
     
     CCControl* addControlSensor(String sensorName, unsigned int pin);
     
-    CCControl* addControlEvent(String eventName);
-    
+    CCControl* addControlEvent(String eventName, CCDeviceFlow* targetDeviceFlow);
+    CCControl* addControlReadOut(String eventName, CCDeviceFlow* targetDeviceFlow, deviceDriverStatusInfo info);
+
     /// Function lists all registered control buttons.
     /// A list with all buttons and bare informations are presented.
     void listControls();

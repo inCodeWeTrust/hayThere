@@ -32,20 +32,20 @@ class CCControl {
 protected:
     int verbosity;
 
-    const String              controlName;
-    const unsigned int        controlIndex;
-    const controlType         type;
-    const unsigned int        pin;
-    const int                 mode;
+    const String                    controlName;
+    const unsigned int              controlIndex;
+    const controlType               type;
+    const unsigned int              pin;
+    const int                       mode;
+    CCDeviceFlow*             targetDeviceFlow;
+    const deviceDriverStatusInfo     info;
     
-    CCDeviceFlow*       targetDeviceFlow;
-
-    int                 sensorValue, sensorValue_prev;
+    int                 controlValue, controlValue_prev;
     
     
 public:
     
-    CCControl(const String controlName, const unsigned int controlIndex, const controlType type, const unsigned int pin, const unsigned int mode);
+    CCControl(const String controlName, const unsigned int controlIndex, const controlType type, const unsigned int pin, const int mode, CCDeviceFlow* targetDeviceFlow, const deviceDriverStatusInfo info);
     virtual ~CCControl() = 0;
 
     virtual void        read() = 0;
@@ -63,13 +63,11 @@ public:
     
     
     
-    const String              getName() const;
+    const String        getName() const;
     controlType         getType() const;
     
     
     
-    virtual void        setTarget(CCDeviceFlow* targetDeviceFlow) = 0;
-
     
     void                setVerbosity(int verbosity);
 

@@ -16,7 +16,7 @@ CCStepperDevice::CCStepperDevice(const String deviceName, const unsigned int ste
     this->verbosity = NO_OUTPUT;
 
     this->acceleration_max = 4000;
-
+    this->statusReportInterval = 500000;
     
     pinMode(dir_pin, OUTPUT);
     pinMode(step_pin, OUTPUT);
@@ -416,6 +416,8 @@ void CCStepperDevice::startTask() {                                 // start thi
         stepExpiration = 0;                                         // set time for next step to 0 (= now)
         t0 = micros() & 0x7fffffff;                                 // remember starting time (but be aware of overflows)
         
+        nextStatusReportTime = t0 + statusReportInterval;
+        
         operateTask();                                              // do first step and calculate time for next step
     }
 }
@@ -589,7 +591,16 @@ void CCStepperDevice::operateTask() {
         
             stopTask();
     }
+    
+    if (elapsedTime > nextStatusReportTime) {
+        readStatus();
+        nextStatusReportTime += statusReportInterval;
+    }
+    
+
 }
+
+void CCStepperDevice::readStatus() {}
 
 void CCStepperDevice::kickUp() {
     if (microSteppingMode > 0) {
@@ -612,4 +623,7 @@ void CCStepperDevice::kickDown() {
         }
     }
 }
+
+uint16_t CCStepperDevice::getDeviceDriverStatus(deviceDriverStatusInfo info) {}
+
 

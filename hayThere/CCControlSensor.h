@@ -39,7 +39,6 @@ public:
     ~CCControlSensor();
     
     
-    void        setTarget(CCDeviceFlow* targetDeviceFlow);
 
 };
 

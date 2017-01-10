@@ -39,7 +39,6 @@ public:
     ~CCControlButton();
     
 
-    void        setTarget(CCDeviceFlow* targetDeviceFlow);
 };
 
 #endif // defined(__deviceScheduler__CCControlButton__)

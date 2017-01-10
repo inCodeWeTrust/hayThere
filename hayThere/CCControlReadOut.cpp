@@ -1,5 +1,5 @@
 //
-//  CCControlSensor.cpp
+//  CCControlReadOut.cpp
 //  deviceScheduler
 //
 //  Created by Little Abakus on 01.04.16.
@@ -7,16 +7,15 @@
 //
 
 
-#include "CCControlSensor.h"
+#include "CCControlReadOut.h"
 
 
 
-CCControlSensor::CCControlSensor(const String controlName, const unsigned int controlIndex, const unsigned int pin) : CCControl(controlName, controlIndex, SENSOR, pin, INPUT) {
-
+CCControlReadOut::CCControlReadOut(const String controlName, const unsigned int controlIndex, CCDeviceFlow* targetDeviceFlow, const deviceDriverStatusInfo info) : CCControl(controlName, controlIndex, READOUT, 0, 0, targetDeviceFlow, info) {
+    
     this->verbosity = NO_OUTPUT;
-            
-    this->sensorValue = analogRead(pin);
-    this->sensorValue_prev = sensorValue;
+    
+    this->controlValue = targetDeviceFlow->getDevice()->getDeviceDriverStatus(info);
     
     
     //        Serial.print(F("[CCControlSensor]: setup "));
@@ -30,9 +29,9 @@ CCControlSensor::CCControlSensor(const String controlName, const unsigned int co
     //        Serial.println();
     
 }
-CCControlSensor::~CCControlSensor() {
+CCControlReadOut::~CCControlReadOut() {
     if (verbosity & BASICOUTPUT) {
-        Serial.print(F("[CCControlSensor]: sensor "));
+        Serial.print(F("[CCControlReadOut]: ReadOut "));
         Serial.print(controlName);
         Serial.println(F(" destructed"));
     }
@@ -40,12 +39,7 @@ CCControlSensor::~CCControlSensor() {
 
 
 
-void CCControlSensor::read() {
-    sensorValue = (analogRead(pin) + sensorValue_prev) / 2;
-    sensorValue_prev = sensorValue;
+void CCControlReadOut::read() {
+    controlValue = targetDeviceFlow->getDevice()->getDeviceDriverStatus(info);
 }
-
-void CCControlSensor::setTarget(CCDeviceFlow* targetDeviceFlow) {}
-
-
 

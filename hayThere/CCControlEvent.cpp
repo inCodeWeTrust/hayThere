@@ -11,7 +11,7 @@
 
 
 
-CCControlEvent::CCControlEvent(const String eventName, const unsigned int eventIndex) : CCControl(eventName, eventIndex, EVENT, 0, 0){
+CCControlEvent::CCControlEvent(const String eventName, const unsigned int eventIndex, CCDeviceFlow* targetDeviceFlow) : CCControl(eventName, eventIndex, EVENT, 0, 0, targetDeviceFlow, NOT_SPECIFIED){
 //    this->verbosity = NO_OUTPUT;
     
     
@@ -41,13 +41,10 @@ CCControlEvent::~CCControlEvent() {
 }
 
 
-void CCControlEvent::setTarget(CCDeviceFlow* targetDeviceFlow) {
-    this->targetDeviceFlow = targetDeviceFlow;
-}
 
 
 void CCControlEvent::read() {
-    sensorValue = (int)targetDeviceFlow->getTaskPointer();
+    controlValue = (int)targetDeviceFlow->getTaskPointer();
 }
 
 

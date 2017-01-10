@@ -11,13 +11,13 @@
 
 
 
-CCControlButton::CCControlButton(const String buttonName, const unsigned int buttonIndex, const unsigned int button_pin, const int mode) : CCControl(buttonName, buttonIndex, BUTTON, button_pin, mode){
+CCControlButton::CCControlButton(const String buttonName, const unsigned int buttonIndex, const unsigned int button_pin, const int mode) : CCControl(buttonName, buttonIndex, BUTTON, button_pin, mode, NULL, NOT_SPECIFIED) {
 
     this->verbosity = NO_OUTPUT;
             
     pinMode(pin, mode);
     
-    this->sensorValue = digitalRead(pin);
+    this->controlValue = digitalRead(pin);
 
     //    this->notificationCode = CONTROLLBUTTON_PRESSED_CODE;
     //    this->notificationText = CONTROLLBUTTON_PRESSED_NOTIFICATION;
@@ -48,10 +48,8 @@ CCControlButton::~CCControlButton() {
 
 
 void CCControlButton::read() {
-    sensorValue = digitalRead(pin);
+    controlValue = digitalRead(pin);
 }
-
-void CCControlButton::setTarget(CCDeviceFlow* targetDeviceFlow) {}
 
 
 

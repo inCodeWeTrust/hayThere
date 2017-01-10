@@ -214,15 +214,40 @@ CCControl* CCDeviceScheduler::addControlSensor(String sensorName, unsigned int p
     
 }
 
-CCControl* CCDeviceScheduler::addControlEvent(String eventName) {
+CCControl* CCDeviceScheduler::addControlEvent(String eventName, CCDeviceFlow* targetDeviceFlow) {
     if (countOfControls >= MAX_CONTROLS_PER_SCHEDULER - 1) return NULL;
     
-    control[countOfControls] = new CCControlEvent(eventName, countOfControls);
+    control[countOfControls] = new CCControlEvent(eventName, countOfControls, targetDeviceFlow);
     
     if (verbosity & BASICOUTPUT) {
         Serial.print(F("[CCDeviceScheduler]: "));
         Serial.print(schedulerName);
         Serial.print(F(": provided controlEvent "));
+        Serial.println(control[countOfControls]->getName());
+    }
+    if (verbosity & MEMORYDEBUG) {
+        Serial.print(F("[CCDeviceScheduler]: "));
+        Serial.print(schedulerName);
+        Serial.print(F(": CCControl constructed at $"));
+        Serial.println((long)control[countOfControls], HEX);
+    }
+    
+    countOfControls++;
+    //	control button index = countOfControls - 1 [8 buttons: index of first: 0, last: 7]
+    
+    return control[countOfControls - 1];
+    
+}
+
+CCControl* CCDeviceScheduler::addControlReadOut(String eventName, CCDeviceFlow* targetDeviceFlow, deviceDriverStatusInfo info) {
+    if (countOfControls >= MAX_CONTROLS_PER_SCHEDULER - 1) return NULL;
+    
+    control[countOfControls] = new CCControlReadOut(eventName, countOfControls, targetDeviceFlow, info);
+    
+    if (verbosity & BASICOUTPUT) {
+        Serial.print(F("[CCDeviceScheduler]: "));
+        Serial.print(schedulerName);
+        Serial.print(F(": provided controlReadOut "));
         Serial.println(control[countOfControls]->getName());
     }
     if (verbosity & MEMORYDEBUG) {

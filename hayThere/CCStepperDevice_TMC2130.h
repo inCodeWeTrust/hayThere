@@ -136,7 +136,8 @@ public:
     
     
     //  TMC2130 readback:
-    uint16_t getDriverState(driverStatusInfo info);
+    uint16_t getDeviceDriverStatus(deviceDriverStatusInfo info);
+    void readStatus();
 
     
     uint8_t read_STAT();

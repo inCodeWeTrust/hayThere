@@ -196,8 +196,9 @@ enum approximationMode {
     SKIP_APPROXIMATION_NEVER = 0xFF
 };
 
-//  motorDriverStatusInfo:
-enum motorDriverStatusInfo {
+//  deviceDriverStatusInfo:
+enum deviceDriverStatusInfo {
+    NOT_SPECIFIED,
     STANDSTILL,
     OPENLOAD,
     SHORT_TO_GROUND,

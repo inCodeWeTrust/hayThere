@@ -51,6 +51,7 @@ approximationMode CCDevice::getApproximation(){return approximation;}
 void CCDevice::increaseTargetReachedCounter() {targetReachedCounter++;}
 void CCDevice::decreaseTargetReachedCounter() {targetReachedCounter--;}
 
+uint16_t CCDevice::getDeviceDriverStatus(deviceDriverStatusInfo info) {}
 
 
 void CCDevice::setVerbosity(int verbosity) {this->verbosity = verbosity;}

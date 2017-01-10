@@ -35,11 +35,10 @@ public:
     void        read();
     
     
-    CCControlReadOut(const String controlName, const unsigned int controlIndex, const unsigned int pin);
+    CCControlReadOut(const String controlName, const unsigned int controlIndex, CCDeviceFlow* targetDeviceFlow, const deviceDriverStatusInfo info);
     ~CCControlReadOut();
     
     
-    void        setTarget(CCDeviceFlow* targetDeviceFlow);
 
 };
 

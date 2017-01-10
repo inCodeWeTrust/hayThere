@@ -147,6 +147,7 @@ protected:
     
     
     
+    
     /// verbosity of the device
     int                 verbosity;
 
@@ -197,6 +198,7 @@ public:
 
 
     virtual void            getReadOut(unsigned int theReadOut) = 0;
+    uint16_t                getDeviceDriverStatus(deviceDriverStatusInfo info);
 
     
     

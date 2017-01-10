@@ -9,30 +9,29 @@
 #include "CCControl.h"
 
 
-CCControl::CCControl(const String controlName, const unsigned int controlIndex, const controlType type, const unsigned int pin, const unsigned int mode) : controlName(controlName), controlIndex(controlIndex), type(type), pin(pin), mode(mode) {}
+CCControl::CCControl(const String controlName, const unsigned int controlIndex, const controlType type, const unsigned int pin, const int mode, CCDeviceFlow* targetDeviceFlow, const deviceDriverStatusInfo info) : controlName(controlName), controlIndex(controlIndex), type(type), pin(pin), mode(mode), targetDeviceFlow(targetDeviceFlow), info(info) {}
 CCControl::~CCControl() {}
 
 
-int CCControl::value() {return sensorValue;}
+int CCControl::value() {return controlValue;}
 
 
 bool CCControl::isGreaterThen(int minimum) const {
-    return sensorValue > minimum;
+    return controlValue > minimum;
 }
 bool CCControl::isSmallerThen(int maximum) const {
-    return sensorValue < maximum;
+    return controlValue < maximum;
 }
 bool CCControl::isAbout(int fix, int tolerance) const {
-    return fabs(sensorValue - fix) < tolerance;
+    return fabs(controlValue - fix) < tolerance;
 }
 bool CCControl::is(int fix) const{
-    return sensorValue == fix;
+    return controlValue == fix;
 }
 bool CCControl::isNot(int fix) const {
-    return !(sensorValue == fix);
+    return !(controlValue == fix);
 }
 
-//void CCControl::setTarget(CCDeviceFlow* targetDeviceFlow) {}
 
 
 

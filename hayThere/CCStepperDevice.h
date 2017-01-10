@@ -41,6 +41,8 @@ protected:
     bool                accelerateDown;
     float               currentVelocity, currVeloBySquare, veloBySquare;
     signed long         t0;
+    long                nextStatusReportTime;
+    int                 statusReportInterval;
     unsigned long       stepExpiration, elapsedTime, lastStepTime;
     float               c0_acc, c0_dec, c1, acceleration_inv, deceleration_inv;
     unsigned int        microSteppingMode;       // 0: none, 1: halfStep, 2: quarterStep, 3: eigthStep, 4: sixteenthStep
@@ -67,6 +69,10 @@ protected:
     const unsigned int        stepsPerRotation;
     
 
+    
+    virtual void                readStatus();
+    
+    
 public:
     CCStepperDevice(const String deviceName, const unsigned int step_pin, const unsigned int dir_pin, const unsigned int enable_pin, const unsigned int stepsPerRotation);
     virtual ~CCStepperDevice();
@@ -87,6 +93,7 @@ public:
     void                finishTask();
 
     virtual void        getReadOut(unsigned int theReadOut) = 0;
+    virtual uint16_t            getDeviceDriverStatus(deviceDriverStatusInfo info);
     
     
 };

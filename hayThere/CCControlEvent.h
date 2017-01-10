@@ -35,15 +35,10 @@ public:
     void        read();
     
     
-    CCControlEvent(const String eventName, const unsigned int eventIndex);
+    CCControlEvent(const String eventName, const unsigned int eventIndex, CCDeviceFlow* targetDeviceFlow);
     ~CCControlEvent();
     
     
-    void        setTarget(CCDeviceFlow* targetDeviceFlow);
-//    CCDeviceFlow* getTargetDeviceFlow();
-//    void setTargetDeviceFlow(CCDeviceFlow* targetDeviceFlow);
-//    int getTargetTaskID();
-//    void setTargetTaskID(int targetTaskID);
 };
 
 #endif // defined(__deviceScheduler__CCControlEvent__)

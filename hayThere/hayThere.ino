@@ -177,13 +177,16 @@ void loop() {
     {
         // ============= devices of initMachine =======================================================================================
         
-        CCDeviceFlow* liftStepperFlow = initTheMachine->addDeviceFlow("liftStepperFlow", liftStepper, 80, 10);
-        CCDeviceFlow* turnStepperFlow = initTheMachine->addDeviceFlow("turnStepperFlow", turnStepper, 10, 2);
+        CCDeviceFlow* liftStepperFlow = initTheMachine->addDeviceFlow("liftStepperFlow", liftStepper, 160, 10);
+        CCDeviceFlow* turnStepperFlow = initTheMachine->addDeviceFlow("turnStepperFlow", turnStepper, 4, 1);
         CCDeviceFlow* fanFlow = initTheMachine->addDeviceFlow("fanFlow", fan, 10, 1000, 1000);
         
         CCControl* operationControl = initTheMachine->addControl(operationButton);
-        
         CCFlowControl* operationFlowControl = initTheMachine->addFlowControl("operationFlowControl", operationControl, IS_NOT, OPERATION_BUTTON_ON);
+
+        CCControl* overtemperatureReadOut = scheduler->addControlReadOut("TMC2130-readOut", liftStepperFlow, OVERTEMPERATURE_WARNING);
+        CCControl* overTemperatureControl = initTheMachine->addControl(overtemperatureReadOut);
+        CCFlowControl* overTemperatureFlowControl = initTheMachine->addFlowControl("overTemperatureFlowControl", overTemperatureControl, IS, true);
         
         // ============= tasks of initMachine =========================================================================================
         
@@ -194,7 +197,7 @@ void loop() {
         
         //  drive head (left) to parking position
         CCTask* liftLeft;
-        liftLeft = liftStepperFlow->addTaskWithPositionReset(1600);
+        liftLeft = liftStepperFlow->addTaskWithPositionReset(3000);
         liftLeft->startByDate(10);
         
          CCTask* liftRight;

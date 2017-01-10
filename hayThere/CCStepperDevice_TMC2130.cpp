@@ -439,35 +439,36 @@ void CCStepperDevice_TMC2130::getReadOut(unsigned int dataToRead) {
     
     switch (dataToRead) {
         case READOUT_MICROSTEP_POSITION:
-            microstepPosition = (this->resultDatagram >> 10) & 0x1FF;
-            if (verbosity & TMC2130_SETUPDEBUG) {
-                Serial.print(F("[CCStepperDevice_TMC2130]: "));
-                Serial.print(deviceName);
-                Serial.print(": microstepPosition: ");
-                Serial.println(microstepPosition);
-            }
+//            microstepPosition = (this->resultDatagram >> 10) & 0x1FF;
+//            if (verbosity & TMC2130_SETUPDEBUG) {
+//                Serial.print(F("[CCStepperDevice_TMC2130]: "));
+//                Serial.print(deviceName);
+//                Serial.print(": microstepPosition: ");
+//                Serial.println(microstepPosition);
+//            }
             break;
         case READOUT_STALLGUARD_LEVEL:
-            stallGuard2Value = (this->resultDatagram >> 10) & 0x3FF;
-            if (verbosity & TMC2130_SETUPDEBUG) {
-                Serial.print(F("[CCStepperDevice_TMC2130]: "));
-                Serial.print(deviceName);
-                Serial.print(": stallGuard2: ");
-                Serial.println(stallGuard2Value);
-            }
+//            stallGuard2Value = (this->resultDatagram >> 10) & 0x3FF;
+//            if (verbosity & TMC2130_SETUPDEBUG) {
+//                Serial.print(F("[CCStepperDevice_TMC2130]: "));
+//                Serial.print(deviceName);
+//                Serial.print(": stallGuard2: ");
+//                Serial.println(stallGuard2Value);
+//            }
             break;
         default:
-            coolStepScalingValue = (this->resultDatagram >> 10) & 0x1F;
-            stallGuard2Value_upper = (this->resultDatagram >> 15) & 0x1F;
-            
-            if (verbosity & TMC2130_SETUPDEBUG) {
-                Serial.print(F("[CCStepperDevice_TMC2130]: "));
-                Serial.print(deviceName);
-                Serial.print(": coolStepScaling: ");
-                Serial.print(coolStepScalingValue);
-                Serial.print(", stallGuard2: ");
-                Serial.println(stallGuard2Value_upper);
-            }
+//            coolStepScalingValue = (this->resultDatagram >> 10) & 0x1F;
+//            stallGuard2Value_upper = (this->resultDatagram >> 15) & 0x1F;
+//            
+//            if (verbosity & TMC2130_SETUPDEBUG) {
+//                Serial.print(F("[CCStepperDevice_TMC2130]: "));
+//                Serial.print(deviceName);
+//                Serial.print(": coolStepScaling: ");
+//                Serial.print(coolStepScalingValue);
+//                Serial.print(", stallGuard2: ");
+//                Serial.println(stallGuard2Value_upper);
+//            }
+            ;
     }
     /*
     standStil = bitRead(this->resultDatagram, 7);
@@ -682,28 +683,81 @@ void CCStepperDevice_TMC2130::setDriverConfigurationRegister(unsigned int slopeC
 }
 
 
-uint16_t CCStepperDevice::getDriverState(driverStatusInfo info) {
-    read_REG(TMC_REG_DRV_STATUS, &extendedDriverState);
+uint16_t CCStepperDevice_TMC2130::getDeviceDriverStatus(deviceDriverStatusInfo info) {
     switch (info) {
-
         case STANDSTILL:
-            return extendedDriverState & TMC_DRV_STATUS_STANDSTILL_MASK;
+            return extendedDriverStatus & TMC_DRV_STATUS_STANDSTILL_MASK;
         case OPENLOAD:
-            return extendedDriverState & TMC_DRV_STATUS_OPENLOAD_MASK;
+            return extendedDriverStatus & TMC_DRV_STATUS_OPENLOAD_MASK;
         case SHORT_TO_GROUND:
-            return extendedDriverState & TMC_DRV_STATUS_SHORT2GND_MASK;
+            return extendedDriverStatus & TMC_DRV_STATUS_SHORT2GND_MASK;
         case OVERTEMPERATURE_WARNING:
-            return extendedDriverState & TMC_DRV_STATUS_OVERTEMP_WARNING_MASK;
+            return extendedDriverStatus & TMC_DRV_STATUS_OVERTEMP_WARNING_MASK;
         case OVERTEMPERATURE_SHUTDOWN:
-            return extendedDriverState & TMC_DRV_STATUS_OVERTEMPERATURE_MASK;
+            return extendedDriverStatus & TMC_DRV_STATUS_OVERTEMPERATURE_MASK;
         case MOTORSTALL:
-            return extendedDriverState & TMC_DRV_STATUS_STALL_MASK;
+            return extendedDriverStatus & TMC_DRV_STATUS_STALL_MASK;
         case MOTOR_CURRENT:
-            return (extendedDriverState & TMC_DRV_STATUS_MOTORCURRENT_MASK) >> TMC_DRV_STATUS_MOTORCURRENT_OFFSET;
+            return (extendedDriverStatus & TMC_DRV_STATUS_MOTORCURRENT_MASK) >> TMC_DRV_STATUS_MOTORCURRENT_OFFSET;
         case STALLGUARD_VALUE:
-            return extendedDriverState & TMC_DRV_STATUS_STALLGUARD_RESULT_MASK;
-
+            return extendedDriverStatus & TMC_DRV_STATUS_STALLGUARD_RESULT_MASK;
+        default:
+            return 0;
     }
+}
+
+void CCStepperDevice_TMC2130::readStatus() {
+//    digitalWrite(chipSelect_pin, LOW);
+//    
+//    // read address
+//    driverStatus = SPI.transfer(TMC_REG_DRV_STATUS);
+//    
+//    // flush 4 bytes
+//    for(int i=0;i<4;i++){
+//        SPI.transfer(0x00);
+//    }
+//    
+//    digitalWrite(chipSelect_pin, HIGH);
+//    // restart transmission
+//    digitalWrite(chipSelect_pin, LOW);
+//    
+//    // read address
+//    driverStatus = SPI.transfer(TMC_REG_DRV_STATUS);
+//    
+//    // retrieve data
+//    extendedDriverStatus  = SPI.transfer(0x00)&0xFF;
+//    extendedDriverStatus <<=8;
+//    extendedDriverStatus |= SPI.transfer(0x00)&0xFF;
+//    extendedDriverStatus <<=8;
+//    extendedDriverStatus |= SPI.transfer(0x00)&0xFF;
+//    extendedDriverStatus <<=8;
+//    extendedDriverStatus |= SPI.transfer(0x00)&0xFF;
+//    
+//    digitalWrite(chipSelect_pin, HIGH);
+
+    read_REG(TMC_REG_DRV_STATUS, &extendedDriverStatus);
+    
+    Serial.print("*** driverStatus: ");
+    Serial.print(driverStatus);
+    Serial.print(", readOut: ");
+    Serial.print(extendedDriverStatus);
+    Serial.print(", STANDSTILL: ");
+    Serial.print(extendedDriverStatus & TMC_DRV_STATUS_STANDSTILL_MASK);
+    Serial.print(", OPENLOAD: ");
+    Serial.print(extendedDriverStatus & TMC_DRV_STATUS_OPENLOAD_MASK);
+    Serial.print(", SHORT_TO_GROUND: ");
+    Serial.print(extendedDriverStatus & TMC_DRV_STATUS_SHORT2GND_MASK);
+    Serial.print(", OVERTEMPERATURE_WARNING: ");
+    Serial.print(extendedDriverStatus & TMC_DRV_STATUS_OVERTEMP_WARNING_MASK);
+    Serial.print(", OVERTEMPERATURE_SHUTDOWN: ");
+    Serial.print(extendedDriverStatus & TMC_DRV_STATUS_OVERTEMPERATURE_MASK);
+    Serial.print(", MOTORSTALL: ");
+    Serial.print(extendedDriverStatus & TMC_DRV_STATUS_STALL_MASK);
+    Serial.print(", MOTOR_CURRENT: ");
+    Serial.print((extendedDriverStatus & TMC_DRV_STATUS_MOTORCURRENT_MASK) >> TMC_DRV_STATUS_MOTORCURRENT_OFFSET);
+    Serial.print(", STALLGUARD_VALUE: ");
+    Serial.println(extendedDriverStatus & TMC_DRV_STATUS_STALLGUARD_RESULT_MASK);
+
 }
 
 
@@ -741,6 +795,7 @@ uint8_t CCStepperDevice_TMC2130::read_REG(uint8_t address, uint32_t *data)
     
     digitalWrite(chipSelect_pin, HIGH);
     // restart transmission
+    delay(1);
     digitalWrite(chipSelect_pin, LOW);
     
     // read address
