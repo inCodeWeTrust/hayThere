@@ -19,6 +19,7 @@
 #include "CCDevice.h"
 #include "CCStepperDevice.h"
 #include "CCStepperDevice_TMC2130.h"
+#include "CCDcControllerDevice.h"
 
 #include "CCControl.h"
 #include "CCControlButton.h"
@@ -80,9 +81,6 @@ class CCDeviceScheduler {
     String  notificationText;
     
     
-    deviceInfoCode handleStartEvent(unsigned long taskTime, CCDevice* currentDevice);
-    deviceInfoCode handleStopEvent(unsigned long taskTime, CCDeviceFlow* currentDeviceFlow);
-    deviceInfoCode handlePreparation(unsigned long taskTime, CCDeviceFlow* currentDeviceFlow);
     
     String getLiteralOfDeviceType(deviceType t);
     String getLiteralOfControllerType(controlType t);
@@ -125,11 +123,20 @@ public:
     
     
     
+    /// Function adds a switching device to the device array and returns the index of the device.
+    /// A switching device is a device, that is simply switched on or off. Device-specific parameters are passed.
+    /// @param deviceName the human-readable name of the device (used for verbose output).
+    /// @param switching_pin the pin number of the device's controll pin.
+    /// @param switchingPin_active the state of the switching pin, where the device is active.
+    /// @return the device index.
+    CCDevice* addDcController(String deviceName, unsigned int switching_pin, bool switchingPin_active);
+
+
     
     /// Function lists all registered devices.
     /// A list with all devices and bare informations are presented.
     void listDevices();
-    
+    void printMessage(unsigned long taskTime, CCDeviceFlow* df, schedulersJob job);
 
     
     /// Array of all control-inputs.

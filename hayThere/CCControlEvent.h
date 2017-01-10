@@ -15,6 +15,7 @@
 
 
 
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 /// @class CCControlEvent
 ///
@@ -24,8 +25,6 @@
 
 
 
-//class CCDeviceFlow;
-//class CCTask;
 
 class CCControlEvent : public CCControl {
 
@@ -39,7 +38,8 @@ public:
     CCControlEvent(const String eventName, const unsigned int eventIndex);
     ~CCControlEvent();
     
-    void setTarget(CCDeviceFlow* targetDeviceFlow);
+    
+    void        setTarget(CCDeviceFlow* targetDeviceFlow);
 //    CCDeviceFlow* getTargetDeviceFlow();
 //    void setTargetDeviceFlow(CCDeviceFlow* targetDeviceFlow);
 //    int getTargetTaskID();

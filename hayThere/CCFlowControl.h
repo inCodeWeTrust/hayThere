@@ -21,9 +21,6 @@ class CCDeviceFlow;
 
 class CCFlowControl {
     
-private:
-    int verbosity;
-    
     const String              controlName;
     const CCControl*          control;
     const comparingMode       comparing;
@@ -33,7 +30,8 @@ private:
 
     CCAction*           action[MAX_ACTIONS_PER_FLOWCONTROL];
     
-    int n = 0;
+    int                 verbosity;
+    
 public:
     
     CCFlowControl(const String controlName, const CCControl* control, const comparingMode comparing, const int target);
@@ -45,15 +43,15 @@ public:
     bool                needsToFire();
     
     
-    const String        getName();
-    CCControl*          getControl();
-    comparingMode       getComparing();
-    int                 getTarget();
+    const String        getName() const;
+    CCControl*          getControl() const;
+    comparingMode       getComparing() const;
+    int                 getTarget() const;
 
     CCAction*           getAction(int a);
     unsigned int        getCountOfActions();
     
-    void setVerbosity(int verbosity);
+    void                setVerbosity(int verbosity);
 
 };
 

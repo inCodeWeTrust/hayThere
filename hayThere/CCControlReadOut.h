@@ -1,13 +1,13 @@
 //
-//  CCControlSensor.h
+//  CCControlReadOut.h
 //  deviceScheduler
 //
 //  Created by Little Abakus on 01.04.16.
 //  Copyright (c) 2016 Little Abakus. All rights reserved.
 //
 
-#ifndef __deviceScheduler__CCControlSensor__
-#define __deviceScheduler__CCControlSensor__
+#ifndef __deviceScheduler__CCControlReadOut__
+#define __deviceScheduler__CCControlReadOut__
 
 
 
@@ -17,7 +17,7 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-/// @class CCControlSensor
+/// @class CCControlReadOut
 ///
 /// @brief Class for buttons to control the workflow
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -26,7 +26,7 @@
 
 
 
-class CCControlSensor : public CCControl {
+class CCControlReadOut : public CCControl {
 
 public:
     
@@ -35,13 +35,13 @@ public:
     void        read();
     
     
-    CCControlSensor(const String controlName, const unsigned int controlIndex, const unsigned int pin);
-    ~CCControlSensor();
+    CCControlReadOut(const String controlName, const unsigned int controlIndex, const unsigned int pin);
+    ~CCControlReadOut();
     
     
     void        setTarget(CCDeviceFlow* targetDeviceFlow);
 
 };
 
-#endif // defined(__deviceScheduler__CCControlSensor__)
+#endif // defined(__deviceScheduler__CCControlReadOut__)
 

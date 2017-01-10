@@ -10,7 +10,7 @@
 #define __deviceScheduler__deviceScheduler__
 
 
-//  #define ARDUINO_SIMULATION
+//#define ARDUINO_SIMULATION
 
 #ifdef ARDUINO_SIMULATION
 #include "SIMPatchRunner.h"
@@ -33,6 +33,10 @@ static serialViewer Serial;
 
 //  deviceScheduler:
 #define SHOW_TASK_VIEW              0x10
+
+//  stepper tmc260:
+#define TMC260_SPIDEBUG             0x10
+#define TMC260_SETUPDEBUG           0x20
 
 //  stepper TMC2130:
 #define TMC2130_SPIDEBUG             0x10
@@ -69,9 +73,18 @@ enum deviceType {
 enum controlType {
     BUTTON,
     SENSOR,
-    EVENT
+    EVENT,
+    READOUT
 };
 
+// schedulers job
+enum schedulersJob {
+    TRIGGER_TASK_PREPARATION,
+    TRIGGER_TASK_START,
+    TRIGGER_TASK_STOP,
+    NOTICE_TASK_STOP,
+    NOTICE_ALL_TASKS_FINISHED
+};
 
 // start/stopEvent:
 enum event {
@@ -112,8 +125,9 @@ enum stoppingMode {
 //  switch mode:
 enum switchingMode {
     NO_SWITCHING,
-    SWITCH_PROMPTLY,
-    SWITCH_AFTER_COMPLETION
+    SWITCH_AFTER_STOP,
+    SWITCH_AFTER_COMPLETION,
+    SWITCH_PROMPTLY
 };
 
 //  position reset mode:
@@ -144,10 +158,12 @@ enum workflowInfoCode {
     WORKFLOW_CANCELED_ON_BUTTON_NOT_REACHED = -0x41,
     WORKFLOW_CANCELED_ON_PARAMETER_ERROR = -0x40,
     WORKFLOW_CANCELED_ON_FLOWCONTROL_ERROR = -0x39,
+    WORKFLOW_CANCELED = -0x38,
     WORKFLOW_DISABLED_ON_ERROR = -0x36,
     WORKFLOW_DISABLED_ON_ENDBUTTON_REACHED = -0x22,
     WORKFLOW_DISABLED_ON_BUTTON_NOT_REACHED = -0x21,
     EVERYTHING_OK = 0x00,
+    WORKFLOW_STOPPED = 0x02,
     SONGCANCELBUTTON_PRESSED = 0x10,
     SONGENDBUTTON_PRESSED = 0x11,
     STOCKBOTTOM_BUTTON_REACHED = 0x12,
@@ -180,7 +196,17 @@ enum approximationMode {
     SKIP_APPROXIMATION_NEVER = 0xFF
 };
 
-
+//  motorDriverStatusInfo:
+enum motorDriverStatusInfo {
+    STANDSTILL,
+    OPENLOAD,
+    SHORT_TO_GROUND,
+    OVERTEMPERATURE_WARNING,
+    OVERTEMPERATURE_SHUTDOWN,
+    MOTORSTALL,
+    MOTOR_CURRENT,
+    STALLGUARD_VALUE
+};
 
 
 #define STEPPINGPERIOD_TO_KICK_UP           150        //150
@@ -188,7 +214,7 @@ enum approximationMode {
 
 
 
-#define I_AM_LATE_LED                       12
+#define I_AM_LATE_LED                       2
 
 
 

@@ -18,8 +18,6 @@ CCControlEvent::CCControlEvent(const String eventName, const unsigned int eventI
     //    this->notificationCode = CONTROLLEvent_PRESSED_CODE;
     //    this->notificationText = CONTROLLEvent_PRESSED_NOTIFICATION;
     
-    countOfActions = 0;
-    long n = 0;
     
     //        Serial.print(F("[CCControlEvent]: setup "));
     //        Serial.print(controlName);

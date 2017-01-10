@@ -26,44 +26,47 @@ class CCControl;
 
 class CCTask {
 
-private:
-    int                     verbosity;
-
     const unsigned int      taskID;
 
-    event                   startEvent;
-    event                   stopEvent;
-    switchingMode           switchTaskPromptly;
     float                   target;
     float                   velocity;
     float                   acceleration;
     float                   deceleration;
     bool                    moveRelativ;
     positionResetMode       positionReset;
-    unsigned long           startDelay;
+
+    
+    event                   startEvent;
     unsigned long           startTime;
-    unsigned long           timeout;
     CCControl*              startControl;
-    CCControl*              stopControl;
     comparingMode           startControlComparing;
-    comparingMode           stopControlComparing;
     int                     startControlTarget;
-    int                     stopControlTarget;
     CCDevice*               startTriggerDevice;
     unsigned int            startTriggerTaskID;
     signed long             startTriggerPosition;
+    unsigned long           startDelay;
+
+    event                   stopEvent;
+    unsigned long           timeout;
+    CCControl*              stopControl;
+    comparingMode           stopControlComparing;
+    int                     stopControlTarget;
     CCDevice*               stopTriggerDevice;
     unsigned int            stopTriggerTaskID;
     signed long             stopTriggerPosition;
+
+    stoppingMode            stopping;
+    switchingMode           switching;
+    
     signed int              initiatePerformanceValue;
     float                   stopPerformance;
-    stoppingMode            stopping;
     unsigned int            approximationCurve;
     unsigned int            gap;
     bool                    reversedApproximation;
     approximationMode       approximation;
     
     
+    int                     verbosity;
 
    
 public:
@@ -132,142 +135,152 @@ public:
     
     
 
-    /// Getter method for getting the target of the device
-    /// @sa target;
-    unsigned int getTaskID();
+    /// Getter method for getting the id of the task
+    /// @sa taskID;
+    unsigned int        getTaskID() const;
     
     /// Getter method for getting the target of the device
     /// @sa target;
-    float getTarget();
+    float               getTarget();
     
     /// Setter method for setting the target of the device
     /// @sa target;
-    void setTarget(float target);
+    void                setTarget(float target);
     
     /// Getter method for getting the velocity of the device
     /// @sa velocity;
-    float getVelocity();
+    float               getVelocity();
     
     /// Setter method for setting the velocity of the device
     /// @sa velocity;
-    void setVelocity(float velocity);
+    void                setVelocity(float velocity);
     
     /// Getter method for getting the acceleration of the device
     /// @sa acceleration;
-    float getAcceleration();
+    float               getAcceleration();
     
     /// Setter method for setting the acceleration of the device
     /// @sa acceleration;
-    void setAcceleration(float acceleration);
+    void                setAcceleration(float acceleration);
     
     /// Getter method for getting the deceleration of the device
     /// @sa deceleration;
-    float getDeceleration();
+    float               getDeceleration();
     
     /// Setter method for setting the deceleration of the device
     /// @sa deceleration;
-    void setDeceleration(float deceleration);
+    void                setDeceleration(float deceleration);
     
     /// Getter method for getting the moveRelativ bit of the device
     /// @sa moveRelativ;
-    bool getMoveRelativ();
+    bool                getMoveRelativ();
 
     /// Getter method for getting the positionReset mode of the device
     /// @sa positionReset;
-    positionResetMode getPositionReset();
+    positionResetMode   getPositionReset();
     
     /// Getter method for getting the startDelay of the device
     /// @sa startDelay;
-    unsigned long getStartDelay();
+    unsigned long       getStartDelay();
     
     /// Getter method for getting the startEvent of the device
     /// @sa startEvent, event;
-    event getStartEvent();
+    event               getStartEvent();
     
     /// Getter method for getting the stopEvent of the device
     /// @sa stopEvent, event;
-    event getStopEvent();
+    event               getStopEvent();
     
     /// Getter method for getting the startTime of the device
     /// @sa startTime;
-    unsigned long getStartTime();
+    unsigned long       getStartTime();
     
     /// Getter method for getting the timeOut of the device
     /// @sa timeOut;
-    unsigned long getTimeout();
+    unsigned long       getTimeout();
     
     /// Getter method for getting the startControl of the device
     /// @sa startControl;
-    CCControl* getStartControl();
+    CCControl*          getStartControl();
     
     /// Getter method for getting the stopControl of the device
     /// @sa stopControl;
-    CCControl* getStopControl();
+    CCControl*          getStopControl();
     
-    
-    int getStartControlTarget();
-    int getStopControlTarget();
+    /// Getter method for getting the target value of startControl
+    /// @sa startControlTarget;
+    int                 getStartControlTarget();
 
-    comparingMode getStartControlComparing();
-    comparingMode getStopControlComparing();
+    /// Getter method for getting the target value of stopControl
+    /// @sa startControlTarget;
+    int                 getStopControlTarget();
+
+    /// Getter method for getting the comparing mode between the target value and the state of startControl
+    /// @sa startControlTarget;
+    comparingMode       getStartControlComparing();
+
+    /// Getter method for getting the comparing mode between the target value and the state of stopControl
+    /// @sa startControlTarget;
+    comparingMode       getStopControlComparing();
 
     /// Getter method for getting the startTriggerDevice of the device
     /// @sa startTriggerDevice;
-    CCDevice* getStartTriggerDevice();
+    CCDevice*           getStartTriggerDevice();
     
     /// Getter method for getting the stopTriggerDevice of the device
     /// @sa stopTriggerDevice;
-    CCDevice* getStopTriggerDevice();
+    CCDevice*           getStopTriggerDevice();
     
     /// Getter method for getting the startTriggerTask of the device
     /// @sa startTriggerTask;
-    unsigned int getStartTriggerTaskID();
+    unsigned int        getStartTriggerTaskID();
     
     /// Getter method for getting the stopTriggerTask of the device
     /// @sa stopTriggerTask;
-    unsigned int getStopTriggerTaskID();
+    unsigned int        getStopTriggerTaskID();
     
     /// Getter method for getting the startTriggerPosition of the device
     /// @sa startTriggerPosition;
-    signed long getStartTriggerPosition();
+    signed long         getStartTriggerPosition();
     
     /// Getter method for getting the stopTriggerPosition of the device
     /// @sa stopTriggerPosition;
-    signed long getStopTriggerPosition();
+    signed long         getStopTriggerPosition();
     
     /// Getter method for getting the stopping of the device
     /// @sa stopping, stoppingMode;
-    stoppingMode getStopping();
+    stoppingMode        getStopping();
     
-    /// Getter method for getting the switchTaskPromptly bit of the device
-    /// @sa switchTaskPromptly;
-    switchingMode getSwitchTaskPromptly();
+    /// Getter method for getting the switching bit of the device
+    /// @sa switching;
+    switchingMode       getSwitching();
     
     /// Getter method for getting the sensor value to initiate the dynamical stop of the device
     /// @sa initiatePerformanceValue;
-    signed int getInitiatePerformanceValue();
+    signed int          getInitiatePerformanceValue();
     
     /// Getter method for getting the stopping performance of the device
     /// @sa stopPerformance;
-    float getStopPerformance();
+    float               getStopPerformance();
     
     /// Getter method for getting the approximation value of the device
     /// @sa approximation;
-    approximationMode getApproximation();
+    approximationMode   getApproximation();
     
     /// Getter method for getting the approximationCurve value of this task
     /// @sa approximationCurve;
-    unsigned int getApproximationCurve();
+    unsigned int        getApproximationCurve();
     
     /// Getter method for getting the approximation value of this task
     /// @sa gap;
-    unsigned int getGap();
+    unsigned int        getGap();
     
     /// Getter method for getting the direction of the approximation value of this task
     /// @sa approximationCurve;
-    bool getReversedApproximation();
+    bool                getReversedApproximation();
     
-    void setVerbosity(int verbosity);
+    /// the verbosity of the device
+    void                setVerbosity(int verbosity);
 
     
 };

@@ -21,6 +21,7 @@
 		40B00B701E01DB78006D8736 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 40B00B6F1E01DB78006D8736 /* main.cpp */; };
 		40B20BA71E01DB79006D8736 /* hayThere.ino in Sources */ = {isa = PBXBuildFile; fileRef = 40B00BA71E01DB79006D8736 /* hayThere.ino */; };
 		40B20BCE1E01DBFE006D8736 /* hayThere.h in Sources */ = {isa = PBXBuildFile; fileRef = 40B00BCE1E01DBFE006D8736 /* hayThere.h */; };
+		40D3EEB01E04C28300DA850F /* CCDcControllerDevice.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 40D3EEA31E04C28300DA850F /* CCDcControllerDevice.cpp */; };
 		AAA2161214210406AA000006 /* abi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAAA161214210406AA000006 /* abi.cpp */; };
 		AAA2161214210406AA000007 /* Arduino.h in Sources */ = {isa = PBXBuildFile; fileRef = AAAA161214210406AA000007 /* Arduino.h */; };
 		AAA2161214210406AA000008 /* binary.h in Sources */ = {isa = PBXBuildFile; fileRef = AAAA161214210406AA000008 /* binary.h */; };
@@ -821,6 +822,12 @@
 		40B00BA61E01DB79006D8736 /* clupload_osx.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = clupload_osx.sh; path = Utilities/clupload_osx.sh; sourceTree = "<group>"; };
 		40B00BA71E01DB79006D8736 /* hayThere.ino */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; path = hayThere.ino; sourceTree = "<group>"; };
 		40B00BCE1E01DBFE006D8736 /* hayThere.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hayThere.h; sourceTree = "<group>"; };
+		40B5E2DD1E2508A900A971B3 /* CCControlReadOut.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCControlReadOut.cpp; sourceTree = "<group>"; };
+		40B5E2DE1E2508D600A971B3 /* CCControlReadOut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCControlReadOut.h; sourceTree = "<group>"; };
+		40D3EEA31E04C28300DA850F /* CCDcControllerDevice.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCDcControllerDevice.cpp; sourceTree = "<group>"; };
+		40D3EEA41E04C28300DA850F /* CCDcControllerDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCDcControllerDevice.h; sourceTree = "<group>"; };
+		40D3EEAD1E04C28300DA850F /* voiceOGraph.Header */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = voiceOGraph.Header; sourceTree = "<group>"; };
+		40D3EEAE1E04C28300DA850F /* voiceOGraph.arduino */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = voiceOGraph.arduino; sourceTree = "<group>"; };
 		AAAA161214210406AA000006 /* abi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = abi.cpp; sourceTree = "<group>"; };
 		AAAA161214210406AA000007 /* Arduino.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Arduino.h; sourceTree = "<group>"; };
 		AAAA161214210406AA000008 /* binary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = binary.h; sourceTree = "<group>"; };
@@ -1543,16 +1550,16 @@
 		407C54C11E021FB000272DE0 /* scheduling */ = {
 			isa = PBXGroup;
 			children = (
-				407C549E1E021F7900272DE0 /* CCAction.cpp */,
 				407C549F1E021F7900272DE0 /* CCAction.h */,
-				407C54AC1E021F7A00272DE0 /* CCDeviceFlow.cpp */,
+				407C549E1E021F7900272DE0 /* CCAction.cpp */,
 				407C54AD1E021F7A00272DE0 /* CCDeviceFlow.h */,
-				407C54B01E021F7A00272DE0 /* CCFlowControl.cpp */,
+				407C54AC1E021F7A00272DE0 /* CCDeviceFlow.cpp */,
 				407C54B11E021F7A00272DE0 /* CCFlowControl.h */,
-				407C54BC1E021F7A00272DE0 /* CCTask.cpp */,
+				407C54B01E021F7A00272DE0 /* CCFlowControl.cpp */,
 				407C54BD1E021F7A00272DE0 /* CCTask.h */,
-				407C54BE1E021F7A00272DE0 /* CCWorkflow.cpp */,
+				407C54BC1E021F7A00272DE0 /* CCTask.cpp */,
 				407C54BF1E021F7A00272DE0 /* CCWorkflow.h */,
+				407C54BE1E021F7A00272DE0 /* CCWorkflow.cpp */,
 				407C54A11E021F7A00272DE0 /* CCControl.h */,
 				407C54A01E021F7A00272DE0 /* CCControl.cpp */,
 				407C54D11E024A0900272DE0 /* CCControlEvent.h */,
@@ -1571,10 +1578,14 @@
 				407C54B91E021F7A00272DE0 /* CCStepperDevice_TMC2130.h */,
 				407C54B81E021F7A00272DE0 /* CCStepperDevice_TMC2130.cpp */,
 				407C54C81E02217300272DE0 /* TMC2130 */,
+				40D3EEA41E04C28300DA850F /* CCDcControllerDevice.h */,
+				40D3EEA31E04C28300DA850F /* CCDcControllerDevice.cpp */,
 				407C54A31E021F7A00272DE0 /* CCControlButton.h */,
 				407C54A21E021F7A00272DE0 /* CCControlButton.cpp */,
 				407C54A51E021F7A00272DE0 /* CCControlSensor.h */,
 				407C54A41E021F7A00272DE0 /* CCControlSensor.cpp */,
+				40B5E2DE1E2508D600A971B3 /* CCControlReadOut.h */,
+				40B5E2DD1E2508A900A971B3 /* CCControlReadOut.cpp */,
 			);
 			name = devices;
 			sourceTree = "<group>";
@@ -1615,6 +1626,8 @@
 				407C54C11E021FB000272DE0 /* scheduling */,
 				407C54AF1E021F7A00272DE0 /* CCDeviceScheduler.h */,
 				407C54AE1E021F7A00272DE0 /* CCDeviceScheduler.cpp */,
+				40D3EEAD1E04C28300DA850F /* voiceOGraph.Header */,
+				40D3EEAE1E04C28300DA850F /* voiceOGraph.arduino */,
 				407C54C01E021F7A00272DE0 /* deviceScheduler.h */,
 				40B00BCE1E01DBFE006D8736 /* hayThere.h */,
 				40B00BA71E01DB79006D8736 /* hayThere.ino */,
@@ -4613,6 +4626,7 @@
 				AAA2161214210406AA0002CC /* inet.h in Sources */,
 				AAA2161214210406AA0002CD /* inet_chksum.h in Sources */,
 				AAA2161214210406AA0002CE /* ip.h in Sources */,
+				40D3EEB01E04C28300DA850F /* CCDcControllerDevice.cpp in Sources */,
 				AAA2161214210406AA0002CF /* ip_addr.h in Sources */,
 				AAA2161214210406AA0002D0 /* ip_frag.h in Sources */,
 				AAA2161214210406AA0002D2 /* api.h in Sources */,

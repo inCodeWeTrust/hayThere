@@ -12,24 +12,23 @@
 
 
 CCStepperDevice::CCStepperDevice(const String deviceName, const unsigned int step_pin, const unsigned int dir_pin, const unsigned int enable_pin, const unsigned int stepsPerRotation) : CCDevice(deviceName, STEPPERDEVICE), step_pin(step_pin), dir_pin(dir_pin), enable_pin(enable_pin), stepsPerRotation(stepsPerRotation) {
-    
-    this->verbosity = CALCULATIONDEBUG;
-    
+
+    this->verbosity = NO_OUTPUT;
+
     this->acceleration_max = 4000;
-    
+
     
     pinMode(dir_pin, OUTPUT);
     pinMode(step_pin, OUTPUT);
     pinMode(enable_pin, OUTPUT);
     digitalWrite(enable_pin, HIGH);
     
-    
-    this->steppingUnit = new unsigned int[9];                         // create array for increment of microSteps according to microSteppingMode
-//    this->steppingUnit = new unsigned int[(int)log2(HIGHEST_MICROSTEP_RESOLUTION) + 1];                         // create array for increment of microSteps according to microSteppingMode
-    this->steppingUnit[0] = 1;
+
+    this->steppingUnit = new unsigned int[(int)log2(HIGHEST_MICROSTEP_RESOLUTION) + 1];                         // create array for increment of microSteps according to microSteppingMode
+        this->steppingUnit[0] = 1;
     
     this->highestSteppingMode = 0;
-    
+
     
     this->stepsPerDegree = stepsPerRotation / 360.0;                                        // save time executing prepareNextTask()
     this->degreesPerMicroStep = 360.0 / stepsPerRotation / (1 << highestSteppingMode);      // save time when calculatin currentPosition in operateTask()
@@ -87,7 +86,7 @@ deviceInfoCode CCStepperDevice::reviewValues(CCTask* nextTask) {
     if (nextTask->getVelocity() == 0) return DEVICE_PARAMETER_ERROR;
     if (nextTask->getAcceleration() == 0) return DEVICE_PARAMETER_ERROR;
     if (nextTask->getDeceleration() == 0) nextTask->setDeceleration(nextTask->getAcceleration());
-    
+
     
     // v[steps/sec] = v[angle/sec] * stepsPerAngle
     nextTask->setVelocity(nextTask->getVelocity() * stepsPerDegree);
@@ -105,11 +104,11 @@ deviceInfoCode CCStepperDevice::reviewValues(CCTask* nextTask) {
 void CCStepperDevice::prepareNextTask() {}
 deviceInfoCode CCStepperDevice::prepareTask(CCTask* nextTask) {
     
-    //    unsigned long t_prepTask = micros();
-    //    unsigned long t_stop, t_sum = 0;
-    
+//    unsigned long t_prepTask = micros();
+//    unsigned long t_stop, t_sum = 0;
+
     if (state == MOVING) {
-        if (switchTaskPromptly) {
+        if (switching) {
             if ((nextTask->getTarget() > currentPosition) == directionDown) {             // XOR: when switching to move in different direction
                 
                 if (verbosity & BASICOUTPUT) {
@@ -133,7 +132,7 @@ deviceInfoCode CCStepperDevice::prepareTask(CCTask* nextTask) {
                 Serial.print(nextTask->getTaskID());
                 Serial.println(F(": need to wait for next fullstep"));
             }
-            
+
             return DELAY_THIS_TASK;
         }
         // *** current velocity ***
@@ -152,9 +151,9 @@ deviceInfoCode CCStepperDevice::prepareTask(CCTask* nextTask) {
     else {
         currentVelocity = 0;
     }
-    
+
     //    this takes ca 30us
-    
+
     
     startPosition = currentPosition;
     
@@ -168,18 +167,7 @@ deviceInfoCode CCStepperDevice::prepareTask(CCTask* nextTask) {
     moveRelativ = nextTask->getMoveRelativ();
     positionReset = nextTask->getPositionReset();
     
-    startEvent = nextTask->getStartEvent();
-    stopEvent = nextTask->getStopEvent();
-    startDelay = nextTask->getStartDelay();
-    startTime = nextTask->getStartTime();
-    timeout = nextTask->getTimeout();
-    startControl = nextTask->getStartControl();
-    stopControl = nextTask->getStopControl();
-    startControlComparing = nextTask->getStartControlComparing();
-    stopControlComparing = nextTask->getStopControlComparing();
-    startControlTarget = nextTask->getStartControlTarget();
-    stopControlTarget = nextTask->getStopControlTarget();
-    switchTaskPromptly = nextTask->getSwitchTaskPromptly();
+    switching = nextTask->getSwitching();
     stopping = nextTask->getStopping();
     approximation = nextTask->getApproximation();
     
@@ -188,8 +176,8 @@ deviceInfoCode CCStepperDevice::prepareTask(CCTask* nextTask) {
     
     
     //    this takes ca 24us
-    
-    
+
+
     
     if (positionReset == RESET_ON_START) {
         currentPosition = 0.0;
@@ -202,7 +190,7 @@ deviceInfoCode CCStepperDevice::prepareTask(CCTask* nextTask) {
     }
     
     //    this takes ca 4us
-    
+
     
     if (stepsToGo < 0) {
         stepsToGo = -stepsToGo;
@@ -227,7 +215,7 @@ deviceInfoCode CCStepperDevice::prepareTask(CCTask* nextTask) {
     
     //    this takes ca 40us
     
-    
+
     accelerateDown = (currentVelocity > velocity);
     
     // *** steps for acceleration: ***
@@ -248,7 +236,7 @@ deviceInfoCode CCStepperDevice::prepareTask(CCTask* nextTask) {
     if ((signed long)stepsForAcceleration + (signed long)stepsForDeceleration > stepsToGo - 2) {
         
         Serial.println(F("!!!! too less steps !!!!"));
-        
+
         // v * v - v0 * v0 = 2 * a_acc * s_acc ==> s_acc = (v * v - v0 * v0) / (2 * a_acc)
         // v * v = 2 * a_dec * s_dec => s_dec = v * v / (2 * a_dec)
         // ==> s_acc / s_dec = (v * v - v0 * v0) / (2 * a_acc) / (v * v / (2 * a_dec)) = a_dec * (v * v - v0 * v0) / (a_acc * v * v)
@@ -320,7 +308,7 @@ deviceInfoCode CCStepperDevice::prepareTask(CCTask* nextTask) {
     timeForAcceleration = 1000000.0 * (velocity - currentVelocity) * acceleration_inv;
     timeForAccAndConstSpeed = 1000000.0 * (stepsToGo - stepsForAcceleration - stepsForDeceleration) / velocity + timeForAcceleration;
     
-    
+
     // *** time for the next step while acceleration: ***
     // n = 0.5 * a * t * t + v0 * t
     // 0.5 * a * t * t + v0 * t - n = 0
@@ -341,10 +329,10 @@ deviceInfoCode CCStepperDevice::prepareTask(CCTask* nextTask) {
     // 1000000.0 / (microStepsPerStep * v) = constant = c1
     // t = microSteps * c1
     c1 = 1000000.0 / (velocity * (1 << highestSteppingMode));
-    
+        
     //    this takes ca 132us
     
-    
+
     microStepsToGo = stepsToGo << highestSteppingMode;
     microStepsForAcceleration = stepsForAcceleration << highestSteppingMode;
     microStepsForAccAndConstSpeed = microStepsToGo - (stepsForDeceleration << highestSteppingMode);
@@ -359,8 +347,8 @@ deviceInfoCode CCStepperDevice::prepareTask(CCTask* nextTask) {
         
         //    this takes ca 88us
         
-        
-    }
+
+   }
     
     if (verbosity & BASICOUTPUT) {
         Serial.print(F("[CCStepperDevice]: "));
@@ -414,7 +402,7 @@ void CCStepperDevice::startTask() {                                 // start thi
         // lets start in highest stepping mode
         microSteppingMode = highestSteppingMode;                    // setup stepper driver's highest steppingMode
         setupMicroSteppingMode();
-        
+                
         if (verbosity & BASICOUTPUT) {
             Serial.print(F("[CCStepperDevice]: "));
             Serial.print(deviceName);
@@ -422,7 +410,7 @@ void CCStepperDevice::startTask() {                                 // start thi
         }
         
         targetReachedCounter = 0;
-        
+
         state = MOVING;                                             // tag device as MOVING
         currentMicroStep = 0;                                       // start counting at 0
         stepExpiration = 0;                                         // set time for next step to 0 (= now)
@@ -434,7 +422,7 @@ void CCStepperDevice::startTask() {                                 // start thi
 
 void CCStepperDevice::initiateStop() {                              // irregular stopping
     if (currentMicroStep < microStepsForAcceleration) {             // if stop request appears while accelerating
-        // stop acceleration immediately and decelerate symmetrical
+                                                                    // stop acceleration immediately and decelerate symmetrical
         // what is my speed?
         // v * v [steps/s] = 2 * a * steps = 2 * a * microStep / microStepsPerFullStep
         veloBySquare = 2.0 * fabs(acceleration) * currentMicroStep / (1 << highestSteppingMode);
@@ -457,7 +445,7 @@ void CCStepperDevice::initiateStop() {                              // irregular
 
 void CCStepperDevice::stopTask() {
     state = MOVE_DONE;
-    
+
     if (verbosity & BASICOUTPUT) {
         Serial.print(F("[CCStepperDevice]: "));
         Serial.print(deviceName);
@@ -466,13 +454,13 @@ void CCStepperDevice::stopTask() {
 }
 void CCStepperDevice::finishTask() {
     state = SLEEPING;
-    
+        
     if (positionReset == RESET_ON_COMPLETION) {
         currentPosition = 0.0;
     }
-    
+
     digitalWrite(I_AM_LATE_LED, LOW);
-    
+
     if (verbosity & BASICOUTPUT) {
         Serial.print(F("[CCStepperDevice]: "));
         Serial.print(deviceName);
@@ -487,13 +475,13 @@ void CCStepperDevice::operateTask() {
     elapsedTime = now - t0;
     
     signed long timeTillNextStep = stepExpiration - elapsedTime;                                    // timeTillNextStep > 0 time for step will come soon
-    // timeTillNextStep < 0 time for step already expired
+                                                                                                    // timeTillNextStep < 0 time for step already expired
     
     if (timeTillNextStep <= 0) {                                                                    // time for a step already expired?
         digitalWrite(step_pin, LOW);
         digitalWrite(step_pin, HIGH);
         
-        if (timeTillNextStep < -100) {
+        if (timeTillNextStep < -200) {
             if (currentMicroStep < microStepsToGo) {
                 digitalWrite(I_AM_LATE_LED, HIGH);
             }
@@ -562,7 +550,7 @@ void CCStepperDevice::operateTask() {
         if (currentMicroStep < microStepsToGo) {
             lastStepTime = stepExpiration;
             stepExpiration = timeForAccAndConstSpeed + (sqrt((currentMicroStep - microStepsForAccAndConstSpeed) * c0_dec + veloBySquare) - velocity) * deceleration_inv * 1000000.0;
-            
+                        
             if (stepExpiration - lastStepTime > STEPPINGPERIOD_TO_KICK_DOWN) kickDown();
             
             if (verbosity & MOVEMENTDEBUG) {
@@ -599,7 +587,7 @@ void CCStepperDevice::operateTask() {
         
         // if we didnt return up to here, we are done!
         
-        stopTask();
+            stopTask();
     }
 }
 

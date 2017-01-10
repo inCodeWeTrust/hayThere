@@ -14,18 +14,6 @@ v0.1 - it works
 #ifndef TRINAMIC_TMC2130_REGISTERS_H
 #define TRINAMIC_TMC2130_REGISTERS_H
 
-#if ARDUINO >= 100
-#include "Arduino.h"
-#else
-#include "WProgram.h"
-#endif
-
-#include <SPI.h>
-
-// SPI
-#define TMC_SPI_CLOCK_DIVIDER SPI_CLOCK_DIV8
-#define TMC_SPI_DATA_MODE SPI_MODE3
-#define TMC_SPI_BIT_ORDER MSBFIRST
 
 // RW
 #define TMC_READ                         (0x00)
@@ -315,5 +303,20 @@ const int TMC_PWMCONF_MASKS[] = {
 // ENCM_CTRL MASK
 // mask the bits from the values we want to set
 #define TMC_ENCM_CTRL_MASK          (0b11);
+
+
+// DRV_STATUS
+#define TMC_DRV_STATUS_STANDSTILL_MASK          0x80000000
+#define TMC_DRV_STATUS_OPENLOAD_MASK            0x60000000
+#define TMC_DRV_STATUS_SHORT2GND_MASK           0x18000000
+#define TMC_DRV_STATUS_OVERTEMP_WARNING_MASK    0x04000000
+#define TMC_DRV_STATUS_OVERTEMPERATURE_MASK     0x02000000
+#define TMC_DRV_STATUS_STALL_MASK               0x04000000
+#define TMC_DRV_STATUS_MOTORCURRENT_MASK        0x001F0000
+#define TMC_DRV_STATUS_MOTORCURRENT_OFFSET      16
+#define TMC_DRV_STATUS_FULLSTEP_ACTIV_MASK      0x00008000
+#define TMC_DRV_STATUS_STALLGUARD_RESULT_MASK   0x000003FF
+
+
 
 #endif // TRINAMIC_TMC2130_REGISTERS_H

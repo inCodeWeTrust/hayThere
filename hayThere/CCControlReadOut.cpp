@@ -1,5 +1,5 @@
 //
-//  CCControlReadOut.cpp
+//  CCControlSensor.cpp
 //  deviceScheduler
 //
 //  Created by Little Abakus on 01.04.16.
@@ -7,11 +7,11 @@
 //
 
 
-#include "CCControlReadOut.h"
+#include "CCControlSensor.h"
 
 
 
-CCControlReadOut::CCControlReadOut(const String controlName, const unsigned int controlIndex, const unsigned int pin) : CCControl(controlName, controlIndex, READOUT, 0, 0) {
+CCControlSensor::CCControlSensor(const String controlName, const unsigned int controlIndex, const unsigned int pin) : CCControl(controlName, controlIndex, SENSOR, pin, INPUT) {
 
     this->verbosity = NO_OUTPUT;
             
@@ -30,9 +30,9 @@ CCControlReadOut::CCControlReadOut(const String controlName, const unsigned int 
     //        Serial.println();
     
 }
-CCControlReadOut::~CCControlReadOut() {
+CCControlSensor::~CCControlSensor() {
     if (verbosity & BASICOUTPUT) {
-        Serial.print(F("[CCControlReadOut]: ReadOut "));
+        Serial.print(F("[CCControlSensor]: sensor "));
         Serial.print(controlName);
         Serial.println(F(" destructed"));
     }
@@ -40,12 +40,12 @@ CCControlReadOut::~CCControlReadOut() {
 
 
 
-void CCControlReadOut::read() {
+void CCControlSensor::read() {
     sensorValue = (analogRead(pin) + sensorValue_prev) / 2;
     sensorValue_prev = sensorValue;
 }
 
-void CCControlReadOut::setTarget(CCDeviceFlow* targetDeviceFlow) {}
+void CCControlSensor::setTarget(CCDeviceFlow* targetDeviceFlow) {}
 
 
 

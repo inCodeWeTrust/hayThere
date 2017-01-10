@@ -14,6 +14,7 @@
 
 
 CCFlowControl::CCFlowControl(const String controlName, const CCControl* control, const comparingMode comparing, const int target) : controlName(controlName), control(control), comparing(comparing), target(target) {
+   
     this->verbosity = NO_OUTPUT;
     
     this->countOfActions = 0;
@@ -49,11 +50,20 @@ CCFlowControl::~CCFlowControl() {
 
 CCAction* CCFlowControl::addAction(String actionName, workflowInfoCode workflowInfo) {
     if (verbosity & BASICOUTPUT) {
-        Serial.print(F("[CCFlowControl]: add Action for "));
+        Serial.print(F("[CCFlowControl]: "));
+        Serial.print(controlName);
+        Serial.print(F(" add Action for "));
         Serial.println(control->getName());
     }
     
-    if (countOfActions >= MAX_ACTIONS_PER_FLOWCONTROL - 1) return NULL;
+    if (countOfActions >= MAX_ACTIONS_PER_FLOWCONTROL - 1) {
+        Serial.print(F("!!!!! array dimensions exceeded !!!!"));
+        Serial.print(F("[CCFlowControl]: "));
+        Serial.print(controlName);
+        Serial.print(F(" at action: "));
+        Serial.println(actionName);
+        return NULL;
+    }
 
     action[countOfActions++] = new CCAction(actionName, workflowInfo);
     return action[countOfActions - 1];
@@ -77,10 +87,10 @@ bool CCFlowControl::needsToFire() {
     return control->is(target);
 }
 
-const String CCFlowControl::getName() {return controlName;}
-CCControl* CCFlowControl::getControl() {return (CCControl*)control;}
-comparingMode CCFlowControl::getComparing() {return (comparingMode)comparing;}
-int CCFlowControl::getTarget() {return (int)target;}
+const String CCFlowControl::getName() const {return controlName;}
+CCControl* CCFlowControl::getControl() const {return (CCControl*)control;}
+comparingMode CCFlowControl::getComparing() const {return (comparingMode)comparing;}
+int CCFlowControl::getTarget() const {return (int)target;}
 
 CCAction* CCFlowControl:: getAction(int a) {return action[a];}
 unsigned int CCFlowControl::getCountOfActions(){return countOfActions;}

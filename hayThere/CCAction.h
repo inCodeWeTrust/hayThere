@@ -18,11 +18,10 @@
 class CCDeviceFlow;
 
 class CCAction {
-private:
-    int verbosity;
 
     const String              actionName;
-    const workflowInfoCode    workflowInfo;
+    
+    workflowInfoCode    workflowInfo;
 
     int                 validTaskID;
     deviceAction        targetAction;
@@ -32,16 +31,20 @@ private:
     int                 notificationCode;
     String              notificationText;
     bool                actionDone;
+    bool                riseActionRepeatedly;
 
+    int                 verbosity;
 
 public:
     
     CCDeviceFlow*       targetDeviceFlow;
 
-    CCAction(const String actionName, const workflowInfoCode workflowInfo);
+    CCAction(const String actionName, workflowInfoCode workflowInfo);
 //    ~CCAction();
 
 
+    void evokeTaskStart(CCDeviceFlow* targetDeviceFlow, CCTask* validTask);
+    void evokeTaskStartOfTask(CCDeviceFlow* targetDeviceFlow, CCTask* validTask, CCTask* followingTask);
     void evokeTaskStop(CCDeviceFlow* targetDeviceFlow, CCTask* validTask, stoppingMode stopping);
 
     void evokeJumpToTask(CCDeviceFlow* targetDeviceFlow, CCTask* validTask, switchingMode switching, CCTask* followingTask);
@@ -55,9 +58,9 @@ public:
 //    int notificationCode = 0, String notificationText = "");
     
 
-    const String              getName();
+    const String        getName() const;
+    
     workflowInfoCode    getWorkflowInfo();
-
     stoppingMode        getStopping();
     switchingMode       getSwitching();
     int                 getValidTaskID();
@@ -67,8 +70,10 @@ public:
     String              getNotificationText();
     bool                getActionDone();
     void                setActionDone(bool d);
-    
-    void setVerbosity(int verbosity);
+    bool                getRiseActionRepeatedly();
+    void                setRiseActionRepeatedly(bool riseActionRepeatedly);
+
+    void                setVerbosity(int verbosity);
 
     
 };

@@ -12,15 +12,16 @@
 
 
 CCControlButton::CCControlButton(const String buttonName, const unsigned int buttonIndex, const unsigned int button_pin, const int mode) : CCControl(buttonName, buttonIndex, BUTTON, button_pin, mode){
+
     this->verbosity = NO_OUTPUT;
             
     pinMode(pin, mode);
     
+    this->sensorValue = digitalRead(pin);
+
     //    this->notificationCode = CONTROLLBUTTON_PRESSED_CODE;
     //    this->notificationText = CONTROLLBUTTON_PRESSED_NOTIFICATION;
-    
-    countOfActions = 0;
-    
+        
     
     //        Serial.print(F("[CCControlButton]: setup "));
     //        Serial.print(controlName);
@@ -50,6 +51,7 @@ void CCControlButton::read() {
     sensorValue = digitalRead(pin);
 }
 
+void CCControlButton::setTarget(CCDeviceFlow* targetDeviceFlow) {}
 
 
 

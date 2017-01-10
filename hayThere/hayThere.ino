@@ -38,18 +38,15 @@
 ///
 
 
-#include "Arduino.h"
-
-// Include application, user and local libraries
-#include "hayThere.h"
-
-// Prototypes
+//#define ARDUINO_SIMULATION
 
 
-// Define variables and constants
-
-
-//#include <malloc.h>
+#ifdef ARDUINO_SIMULATION
+#include "SIMPatchRunner.h"
+#else
+#include <Arduino.h>
+#include <malloc.h>
+#endif
 
 
 
@@ -130,9 +127,15 @@ void loop() {
                                                          STEPPER_LIFT_CHIPSELECT_PIN,
                                                          STEPPER_LIFT_CURRENT);
     
+    CCDevice* fan = scheduler->addDcController(FAN_NAME,
+                                               FAN_PIN,
+                                               FAN_ACTIV);
     
-    CCControl* liftRepeatControl = scheduler->addControlEvent("liftRepeatControl");
-    CCControl* turnRepeatControl = scheduler->addControlEvent("turnRepeatControl");
+    
+//
+//    
+//    CCControl* liftRepeatControl = scheduler->addControlEvent("liftRepeatControl");
+//    CCControl* turnRepeatControl = scheduler->addControlEvent("turnRepeatControl");
     
     // ================================================================================================================================
     //=================================================================================================================================
@@ -144,9 +147,13 @@ void loop() {
     Serial.println(scheduler->getName());
 
     
+    CCControl* operationButton = scheduler->addControlButton(OPERATION_BUTTON_NAME,
+                                                             OPERATION_BUTTON_PIN,
+                                                             OPERATION_BUTTON_MODE);
     
     scheduler->listDevices();
     scheduler->listControls();
+    
     
     
     
@@ -170,30 +177,44 @@ void loop() {
     {
         // ============= devices of initMachine =======================================================================================
         
-        CCDeviceFlow* liftStepperFlow = initTheMachine->addDeviceFlow("liftStepperFlow", liftStepper, 1000, 100);
-        CCDeviceFlow* turnStepperFlow = initTheMachine->addDeviceFlow("turnStepperFlow", turnStepper, 1000, 400);
+        CCDeviceFlow* liftStepperFlow = initTheMachine->addDeviceFlow("liftStepperFlow", liftStepper, 80, 10);
+        CCDeviceFlow* turnStepperFlow = initTheMachine->addDeviceFlow("turnStepperFlow", turnStepper, 10, 2);
+        CCDeviceFlow* fanFlow = initTheMachine->addDeviceFlow("fanFlow", fan, 10, 1000, 1000);
         
-
+        CCControl* operationControl = initTheMachine->addControl(operationButton);
+        
+        CCFlowControl* operationFlowControl = initTheMachine->addFlowControl("operationFlowControl", operationControl, IS_NOT, OPERATION_BUTTON_ON);
         
         // ============= tasks of initMachine =========================================================================================
         
+        //  switch fan on
+        CCTask* runFan;
+        runFan = fanFlow->addTask(1.0);
+        runFan->startByDate(5);
+        
         //  drive head (left) to parking position
         CCTask* liftLeft;
-        liftLeft = liftStepperFlow->addTask(3600);
+        liftLeft = liftStepperFlow->addTaskWithPositionReset(1600);
         liftLeft->startByDate(10);
-        
-        //  drive head (right) to parking position
-        CCTask* turnLeft;
-        turnLeft = turnStepperFlow->addTask(3600);
-        turnLeft->startByDate(20);
         
          CCTask* liftRight;
         liftRight = liftStepperFlow->addTask(0);
         liftRight->startAfterCompletion();
+
+        
+        //  drive head (right) to parking position
+        CCTask* turnLeft;
+        turnLeft = turnStepperFlow->addTaskWithPositionReset(180);
+        turnLeft->startByDate(20);
         
         CCTask* turnRight;
         turnRight = turnStepperFlow->addTask(0);
         turnRight->startAfterCompletion();
+        
+        runFan->stopAfterCompletionOf(turnStepper, turnRight, STOP_NORMAL);
+        
+        CCAction* stopOperation = operationFlowControl->addAction("stopOperationAction", WORKFLOW_STOPPED);
+        stopOperation->evokeBreak();
         
         
 //        liftRepeatControl->setTarget(liftStepperFlow);
@@ -202,11 +223,15 @@ void loop() {
 //        liftRepeatAction = repeatLiftingControl->addAction("liftRepeatAction", EVERYTHING_OK);
 //        liftRepeatAction->evokeJumpToTask(liftStepperFlow, NULL, SWITCH_AFTER_COMPLETION, liftLeft);
         
-        turnRepeatControl->setTarget(turnStepperFlow);
-        CCFlowControl* repeatTurningControl = initTheMachine->addFlowControl("repeatTurningControl", turnRepeatControl, IS_GREATER_THEN, turnRight);
-        CCAction* turnRepeatAction;
-        turnRepeatAction = repeatTurningControl->addAction("turnRepeatAction", EVERYTHING_OK);
-        turnRepeatAction->evokeJumpToTask(turnStepperFlow, NULL, SWITCH_AFTER_COMPLETION, turnLeft);
+//        turnRepeatControl->setTarget(turnStepperFlow);
+//        CCFlowControl* repeatTurningControl = initTheMachine->addFlowControl("repeatTurningControl", turnRepeatControl, IS_GREATER_THEN, turnLeft);
+//        CCAction* turnRepeatAction_01;
+//        turnRepeatAction_01 = repeatTurningControl->addAction("turnRepeatAction", EVERYTHING_OK);
+//        turnRepeatAction_01->evokeJumpToTask(turnStepperFlow, turnRight, SWITCH_AFTER_COMPLETION, turnLeft);
+
+//        CCAction* turnRepeatAction_02;
+//        turnRepeatAction_02 = repeatTurningControl->addAction("turnRepeatAction", EVERYTHING_OK);
+//        turnRepeatAction_02->evokeTaskStart(turnStepperFlow, turnLeft);
         
         scheduler->reviewTasks(initTheMachine);
         scheduler->listAllTasks(initTheMachine);
@@ -231,8 +256,11 @@ void loop() {
     long blinkTimer = millis();
     
     while (!initNeeded) {
+        if (digitalRead(OPERATION_BUTTON_PIN) == OPERATION_BUTTON_ON) {
+            scheduler->run(initTheMachine);
+        }
         
-        scheduler->run(initTheMachine);
+        delay(500);
         
         // ============= or just blink =======================================================================================================
         

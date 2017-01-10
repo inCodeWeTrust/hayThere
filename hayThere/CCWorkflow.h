@@ -29,25 +29,26 @@
 
 class CCWorkflow {
 private:
-    int verbosity;
-
-    const String workflowName;
+    const String        workflowName;
     
     /// Parameter of the workflow.
     /// Value holds the number of deviceFlows to be executed within this workflow.
-    unsigned int       countOfDeviceFlows;
+    unsigned int        countOfDeviceFlows;
 
     /// Parameter of the workflow.
     /// Value holds the number of flowControls to be considered within this workflow.
-    unsigned int       countOfControls;
+    unsigned int        countOfControls;
 
     /// Parameter of the workflow.
     /// Value holds the number of flowControls to be considered within this workflow.
-    unsigned int       countOfFlowControls;
+    unsigned int        countOfFlowControls;
     
 
-    workflowInfoCode            workflowInfo;
+    workflowInfoCode    workflowInfo;
 
+    
+    int verbosity;
+    
 public:
     CCDeviceFlow*       deviceFlow[MAX_DEVICEFLOWS_PER_WORKFLOW];
     CCControl*          control[MAX_CONTROLS_PER_WORKFLOW];
@@ -83,7 +84,7 @@ public:
 
     CCFlowControl* addFlowControl(String flowControlName, CCControl* control, comparingMode comparing, CCTask* targetTask);
 
-    const String getName();
+    const String getName() const;
     unsigned int getCountOfDeviceFlows();
     unsigned int getCountOfControls();
     unsigned int getCountOfFlowControls();

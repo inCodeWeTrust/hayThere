@@ -69,11 +69,27 @@ CCStepperDevice_TMC2130::CCStepperDevice_TMC2130(const String deviceName, const 
         this->steppingUnit[codeIndex] = (1 << (highestSteppingMode - codeIndex));
     }
     
-    set_IHOLD_IRUN(5,5,5); // ([0-31],[0-31],[0-5]) sets all currents to maximum
-    set_I_scale_analog(0); // ({0,1}) 0: I_REF internal, 1: sets I_REF to AIN
-    set_tbl(1); // ([0-3]) set comparator blank time to 16, 24, 36 or 54 clocks, 1 or 2 is recommended
-    set_toff(8); // ([0-15]) 0: driver disable, 1: use only with TBL>2, 2-15: off time setting during slow decay phase
+    set_internal_Rsense(0);
+    set_I_scale_analog(0);
+    set_vsense(0);
+    set_IHOLD_IRUN(18, 18, 8);
+    set_TPOWERDOWN(200);
+    set_en_pwm_mode(1);
+    set_pwm_autoscale(1);
+    set_PWM_GRAD(1);
+    set_PWM_AMPL(255);
+    set_pwm_freq(0x01);
+    
+    set_toff(4); // ([0-15]) 0: driver disable, 1: use only with TBL>2, 2-15: off time setting during slow decay phase
 
+    set_tbl(2); // ([0-3]) set comparator blank time to 16, 24, 36 or 54 clocks, 1 or 2 is recommended
+
+    set_hstrt(4);
+    set_hend(0);
+    
+//    set_IHOLD_IRUN(9,9,5); // ([0-31],[0-31],[0-5]) sets all currents to maximum
+//    set_I_scale_analog(0); // ({0,1}) 0: I_REF internal, 1: sets I_REF to AIN
+    
     
 /*
     //        Serial.print(F("[CCStepperDevice_TMC2130]: setup stepper "));
@@ -453,7 +469,7 @@ void CCStepperDevice_TMC2130::getReadOut(unsigned int dataToRead) {
                 Serial.println(stallGuard2Value_upper);
             }
     }
-    
+    /*
     standStil = bitRead(this->resultDatagram, 7);
     
     openLoad = (this->resultDatagram & 0x60) >> 5;
@@ -482,7 +498,7 @@ void CCStepperDevice_TMC2130::getReadOut(unsigned int dataToRead) {
         Serial.print(": stallGuard2Status: ");
         Serial.println(stallGuard2Status);
     }
-    
+    */
 
 }
 
@@ -664,6 +680,33 @@ void CCStepperDevice_TMC2130::setDriverConfigurationRegister(unsigned int slopeC
     doTransaction(driverConfiguration);
 
 }
+
+
+uint16_t CCStepperDevice::getDriverState(driverStatusInfo info) {
+    read_REG(TMC_REG_DRV_STATUS, &extendedDriverState);
+    switch (info) {
+
+        case STANDSTILL:
+            return extendedDriverState & TMC_DRV_STATUS_STANDSTILL_MASK;
+        case OPENLOAD:
+            return extendedDriverState & TMC_DRV_STATUS_OPENLOAD_MASK;
+        case SHORT_TO_GROUND:
+            return extendedDriverState & TMC_DRV_STATUS_SHORT2GND_MASK;
+        case OVERTEMPERATURE_WARNING:
+            return extendedDriverState & TMC_DRV_STATUS_OVERTEMP_WARNING_MASK;
+        case OVERTEMPERATURE_SHUTDOWN:
+            return extendedDriverState & TMC_DRV_STATUS_OVERTEMPERATURE_MASK;
+        case MOTORSTALL:
+            return extendedDriverState & TMC_DRV_STATUS_STALL_MASK;
+        case MOTOR_CURRENT:
+            return (extendedDriverState & TMC_DRV_STATUS_MOTORCURRENT_MASK) >> TMC_DRV_STATUS_MOTORCURRENT_OFFSET;
+        case STALLGUARD_VALUE:
+            return extendedDriverState & TMC_DRV_STATUS_STALLGUARD_RESULT_MASK;
+
+    }
+}
+
+
 
 // read status
 uint8_t CCStepperDevice_TMC2130::read_STAT()
@@ -1500,25 +1543,25 @@ uint8_t CCStepperDevice_TMC2130::set_ENCM_CTRL(uint8_t value)
 //////////
 
 // check the reset status
-boolean CCStepperDevice_TMC2130::isReset()
+bool CCStepperDevice_TMC2130::isReset()
 {
     return driverStatus&TMC_SPISTATUS_RESET_MASK ? true : false;
 }
 
 // check the error status
-boolean CCStepperDevice_TMC2130::isError()
+bool CCStepperDevice_TMC2130::isError()
 {
     return driverStatus&TMC_SPISTATUS_ERROR_MASK ? true : false;
 }
 
 // check the stallguard status
-boolean CCStepperDevice_TMC2130::isStallguard()
+bool CCStepperDevice_TMC2130::isStallguard()
 {
     return driverStatus&TMC_SPISTATUS_STALLGUARD_MASK ? true : false;
 }
 
 // check the standstill status
-boolean CCStepperDevice_TMC2130::isStandstill()
+bool CCStepperDevice_TMC2130::isStandstill()
 {
     return driverStatus&TMC_SPISTATUS_STANDSTILL_MASK ? true : false;
 }

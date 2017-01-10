@@ -12,12 +12,12 @@
 
 #include "CCStepperDevice.h"
 
-#ifdef ARDUINO_SIMULATION
-static SPICommunication SPI;
-#else
-#include <SPI.h>
-#endif
-
+//#ifdef ARDUINO_SIMULATION
+//static SPICommunication SPI;
+//#else
+//#include <SPI.h>
+//#endif
+//
 
 
 
@@ -41,13 +41,6 @@ static SPICommunication SPI;
 class CCStepperDevice_TMC2130 : public CCStepperDevice {
         
 public:
-    //  TMC2130 readback:
-    unsigned int microstepPosition, stallGuard2Value;
-    unsigned int coolStepScalingValue, stallGuard2Value_upper;
-    bool standStil;
-    unsigned int openLoad, shortToGnd;
-    bool overTemperatureWarning, overTemperatureShutdown, stallGuard2Status;
-    
 
     CCStepperDevice_TMC2130(const String deviceName, const unsigned int step_pin, const unsigned int dir_pin, const unsigned int enable_pin, const unsigned int stepsPerRotation, const unsigned int chipSelect_pin, unsigned int currentMax);
     
@@ -142,7 +135,9 @@ public:
 	void setCurrent(unsigned int current);
     
     
-    
+    //  TMC2130 readback:
+    uint16_t getDriverState(driverStatusInfo info);
+
     
     uint8_t read_STAT();
     uint8_t read_REG( uint8_t address , uint32_t *data );
@@ -234,10 +229,12 @@ public:
     
     uint8_t set_ENCM_CTRL(uint8_t value);
     
-    boolean isReset();
-    boolean isError();
-    boolean isStallguard();
-    boolean isStandstill();
+    bool isReset();
+    bool isError();
+    bool isStallguard();
+    bool isStandstill();
+    
+    bool isOverTemperatureWarning();
     String debug();
 
     
@@ -270,6 +267,7 @@ private:
     uint32_t _coolconf;
     uint32_t _pwmconf;
     uint8_t driverStatus;
+    uint32_t extendedDriverStatus;
     String debugHelp;
 
 };

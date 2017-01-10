@@ -9,9 +9,6 @@
 #include "CCWorkflow.h"
 
 
-void CCWorkflow::setVerbosity(int verbosity) {this->verbosity = verbosity;}
-
-
 CCWorkflow::CCWorkflow(const String workflowName) : workflowName(workflowName) {
 
     this->verbosity = NO_OUTPUT;
@@ -31,6 +28,7 @@ CCWorkflow::CCWorkflow(const String workflowName) : workflowName(workflowName) {
     //        Serial.println();
 
 }
+
 CCWorkflow::~CCWorkflow() {
     for (int df = countOfDeviceFlows - 1; df >= 0; df--) {
         if (verbosity & BASICOUTPUT) {
@@ -60,36 +58,70 @@ CCWorkflow::~CCWorkflow() {
 }
 
 CCDeviceFlow* CCWorkflow::addDeviceFlow(String deviceFlowName, CCDevice* device, float defaultVelocity, float defaultAcceleration, float defaultDeceleration) {
-    if (countOfDeviceFlows >= MAX_DEVICEFLOWS_PER_WORKFLOW - 1) return NULL;
-    
+   
+    if (countOfDeviceFlows >= MAX_DEVICEFLOWS_PER_WORKFLOW - 1) {
+        Serial.print(F("!!!!! array dimensions exceeded !!!!"));
+        Serial.print(F("[CCWorkflow]: "));
+        Serial.print(workflowName);
+        Serial.print(F(" at deviceFlow: "));
+        Serial.println(deviceFlowName);
+        return NULL;
+    }
+
     deviceFlow[countOfDeviceFlows] = new CCDeviceFlow(deviceFlowName, countOfDeviceFlows, device, defaultVelocity, defaultAcceleration, defaultDeceleration);
     countOfDeviceFlows++;
     return deviceFlow[countOfDeviceFlows - 1];
 }
 
 CCControl* CCWorkflow::addControl(CCControl* control) {
-    if (countOfControls >= MAX_CONTROLS_PER_WORKFLOW - 1) return NULL;
+    
+    if (countOfControls >= MAX_CONTROLS_PER_WORKFLOW - 1) {
+        Serial.print(F("!!!!! array dimensions exceeded !!!!"));
+        Serial.print(F("[CCWorkflow]: "));
+        Serial.print(workflowName);
+        Serial.print(F(" at control: "));
+        Serial.println(control->getName());
+        return NULL;
+    }
 
     this->control[this->countOfControls++] = control;
     return this->control[this->countOfControls - 1];
 }
 
 CCFlowControl* CCWorkflow::addFlowControl(String flowControlName, CCControl* control, comparingMode comparing, int target) {
-    if (countOfFlowControls >= MAX_FLOWCONTROLS_PER_WORKFLOW - 1) return NULL;
+   
+    if (countOfFlowControls >= MAX_FLOWCONTROLS_PER_WORKFLOW - 1) {
+        Serial.print(F("!!!!! array dimensions exceeded !!!!"));
+        Serial.print(F("[CCWorkflow]: "));
+        Serial.print(workflowName);
+        Serial.print(F(" at flowControl: "));
+        Serial.println(flowControlName);
+        return NULL;
+    }
 
     this->flowControl[countOfFlowControls++] = new CCFlowControl(flowControlName, control, comparing, target);
     return this->flowControl[countOfFlowControls - 1];
 }
 CCFlowControl* CCWorkflow::addFlowControl(String flowControlName, CCControl* control, comparingMode comparing, CCTask* targetTask) {
-    if (countOfFlowControls >= MAX_FLOWCONTROLS_PER_WORKFLOW - 1) return NULL;
-    
+
+    if (countOfFlowControls >= MAX_FLOWCONTROLS_PER_WORKFLOW - 1) {
+        Serial.print(F("!!!!! array dimensions exceeded !!!!"));
+        Serial.print(F("[CCWorkflow]: "));
+        Serial.print(workflowName);
+        Serial.print(F(" at flowControl: "));
+        Serial.println(flowControlName);
+        return NULL;
+    }
+
     this->flowControl[countOfFlowControls++] = new CCFlowControl(flowControlName, control, comparing, targetTask->getTaskID());
     return this->flowControl[countOfFlowControls - 1];
 }
 
 
 
-const String CCWorkflow::getName() {return workflowName;}
+
+const String CCWorkflow::getName() const {return workflowName;}
+
 unsigned int CCWorkflow::getCountOfDeviceFlows(){return countOfDeviceFlows;}
 unsigned int CCWorkflow::getCountOfFlowControls(){return countOfFlowControls;}
 unsigned int CCWorkflow::getCountOfControls(){return countOfControls;}
@@ -106,3 +138,6 @@ void CCWorkflow::postWorkflowInfo(workflowInfoCode info) {
     }
 }
  */
+
+void CCWorkflow::setVerbosity(int verbosity) {this->verbosity = verbosity;}
+

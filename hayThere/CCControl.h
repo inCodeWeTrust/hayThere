@@ -42,13 +42,12 @@ protected:
 
     int                 sensorValue, sensorValue_prev;
     
-    unsigned int        countOfActions;
-
-    int n = 0;
+    
 public:
     
     CCControl(const String controlName, const unsigned int controlIndex, const controlType type, const unsigned int pin, const unsigned int mode);
-    virtual             ~CCControl() = 0;
+    virtual ~CCControl() = 0;
+
     virtual void        read() = 0;
     
     int                 value();
@@ -65,12 +64,14 @@ public:
     
     
     const String              getName() const;
-    controlType         getType();
+    controlType         getType() const;
     
-    virtual void setTarget(CCDeviceFlow* targetDeviceFlow);
+    
+    
+    virtual void        setTarget(CCDeviceFlow* targetDeviceFlow) = 0;
 
     
-    void setVerbosity(int verbosity);
+    void                setVerbosity(int verbosity);
 
     
 private:
