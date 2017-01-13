@@ -72,7 +72,7 @@ CCStepperDevice_TMC2130::CCStepperDevice_TMC2130(const String deviceName, const 
     set_internal_Rsense(0);
     set_I_scale_analog(0);
     set_vsense(0);
-    set_IHOLD_IRUN(18, 18, 8);
+    set_IHOLD_IRUN(10, 31, 8);
     set_TPOWERDOWN(200);
     set_en_pwm_mode(1);
     set_pwm_autoscale(1);
@@ -407,6 +407,8 @@ void CCStepperDevice_TMC2130::calculateCurrentSetup(unsigned int current) {
 
 
 void CCStepperDevice_TMC2130::setCurrent(unsigned int current) {
+    set_IHOLD_IRUN(10, current, 8);
+/*
     calculateCurrentSetup(current);
     
     //delete the old value
@@ -417,6 +419,7 @@ void CCStepperDevice_TMC2130::setCurrent(unsigned int current) {
 
     bitWrite(driverConfiguration, 6, senseResistorVoltage165mV);
     doTransaction(driverConfiguration);
+ */
 	
 }
 void CCStepperDevice_TMC2130::setCurrentScale(unsigned int currentScale) {
@@ -686,17 +689,17 @@ void CCStepperDevice_TMC2130::setDriverConfigurationRegister(unsigned int slopeC
 uint16_t CCStepperDevice_TMC2130::getDeviceDriverStatus(deviceDriverStatusInfo info) {
     switch (info) {
         case STANDSTILL:
-            return extendedDriverStatus & TMC_DRV_STATUS_STANDSTILL_MASK;
+            return (extendedDriverStatus & TMC_DRV_STATUS_STANDSTILL_MASK) != 0;
         case OPENLOAD:
-            return extendedDriverStatus & TMC_DRV_STATUS_OPENLOAD_MASK;
+            return (extendedDriverStatus & TMC_DRV_STATUS_OPENLOAD_MASK) != 0;
         case SHORT_TO_GROUND:
-            return extendedDriverStatus & TMC_DRV_STATUS_SHORT2GND_MASK;
+            return (extendedDriverStatus & TMC_DRV_STATUS_SHORT2GND_MASK) != 0;
         case OVERTEMPERATURE_WARNING:
-            return extendedDriverStatus & TMC_DRV_STATUS_OVERTEMP_WARNING_MASK;
+            return (extendedDriverStatus & TMC_DRV_STATUS_OVERTEMP_WARNING_MASK) != 0;
         case OVERTEMPERATURE_SHUTDOWN:
-            return extendedDriverStatus & TMC_DRV_STATUS_OVERTEMPERATURE_MASK;
+            return (extendedDriverStatus & TMC_DRV_STATUS_OVERTEMPERATURE_MASK) != 0;
         case MOTORSTALL:
-            return extendedDriverStatus & TMC_DRV_STATUS_STALL_MASK;
+            return (extendedDriverStatus & TMC_DRV_STATUS_STALL_MASK) != 0;
         case MOTOR_CURRENT:
             return (extendedDriverStatus & TMC_DRV_STATUS_MOTORCURRENT_MASK) >> TMC_DRV_STATUS_MOTORCURRENT_OFFSET;
         case STALLGUARD_VALUE:
@@ -736,23 +739,24 @@ void CCStepperDevice_TMC2130::readStatus() {
 //    digitalWrite(chipSelect_pin, HIGH);
 
     read_REG(TMC_REG_DRV_STATUS, &extendedDriverStatus);
+   
     
     Serial.print("*** driverStatus: ");
-    Serial.print(driverStatus);
+    Serial.print(driverStatus, BIN);
     Serial.print(", readOut: ");
-    Serial.print(extendedDriverStatus);
+    Serial.println(extendedDriverStatus, BIN);
     Serial.print(", STANDSTILL: ");
-    Serial.print(extendedDriverStatus & TMC_DRV_STATUS_STANDSTILL_MASK);
+    Serial.print((extendedDriverStatus & TMC_DRV_STATUS_STANDSTILL_MASK) != 0);
     Serial.print(", OPENLOAD: ");
-    Serial.print(extendedDriverStatus & TMC_DRV_STATUS_OPENLOAD_MASK);
+    Serial.print((extendedDriverStatus & TMC_DRV_STATUS_OPENLOAD_MASK) != 0);
     Serial.print(", SHORT_TO_GROUND: ");
-    Serial.print(extendedDriverStatus & TMC_DRV_STATUS_SHORT2GND_MASK);
+    Serial.print((extendedDriverStatus & TMC_DRV_STATUS_SHORT2GND_MASK) != 0);
     Serial.print(", OVERTEMPERATURE_WARNING: ");
-    Serial.print(extendedDriverStatus & TMC_DRV_STATUS_OVERTEMP_WARNING_MASK);
+    Serial.print((extendedDriverStatus & TMC_DRV_STATUS_OVERTEMP_WARNING_MASK) != 0);
     Serial.print(", OVERTEMPERATURE_SHUTDOWN: ");
-    Serial.print(extendedDriverStatus & TMC_DRV_STATUS_OVERTEMPERATURE_MASK);
+    Serial.print((extendedDriverStatus & TMC_DRV_STATUS_OVERTEMPERATURE_MASK) != 0);
     Serial.print(", MOTORSTALL: ");
-    Serial.print(extendedDriverStatus & TMC_DRV_STATUS_STALL_MASK);
+    Serial.print((extendedDriverStatus & TMC_DRV_STATUS_STALL_MASK) != 0);
     Serial.print(", MOTOR_CURRENT: ");
     Serial.print((extendedDriverStatus & TMC_DRV_STATUS_MOTORCURRENT_MASK) >> TMC_DRV_STATUS_MOTORCURRENT_OFFSET);
     Serial.print(", STALLGUARD_VALUE: ");

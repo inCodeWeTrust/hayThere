@@ -95,6 +95,8 @@ public:
     virtual void        getReadOut(unsigned int theReadOut) = 0;
     virtual uint16_t            getDeviceDriverStatus(deviceDriverStatusInfo info);
     
+    virtual void        setCurrent(unsigned int current);
+
     
 };
 

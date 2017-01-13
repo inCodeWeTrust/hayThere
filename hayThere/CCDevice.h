@@ -201,6 +201,8 @@ public:
     uint16_t                getDeviceDriverStatus(deviceDriverStatusInfo info);
 
     
+    virtual void        setCurrent(unsigned int current);
+
     
     
     /// Getter method for getting the name of the device

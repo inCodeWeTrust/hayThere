@@ -118,6 +118,7 @@ void loop() {
                                                         STEPPER_TURN_CHIPSELECT_PIN,
                                                         STEPPER_TURN_CURRENT);
 
+    turnStepper->setCurrent(20);
     
     CCDevice* liftStepper = scheduler->addStepper_TMC2130(STEPPER_LIFT_NAME,
                                                          STEPPER_LIFT_STEP_PIN,
@@ -126,6 +127,9 @@ void loop() {
                                                          STEPPER_LIFT_STEPS_PER_ROTATION,
                                                          STEPPER_LIFT_CHIPSELECT_PIN,
                                                          STEPPER_LIFT_CURRENT);
+    
+    liftStepper->setCurrent(31);
+    
     
     CCDevice* fan = scheduler->addDcController(FAN_NAME,
                                                FAN_PIN,
@@ -207,7 +211,7 @@ void loop() {
         
         //  drive head (right) to parking position
         CCTask* turnLeft;
-        turnLeft = turnStepperFlow->addTaskWithPositionReset(180);
+        turnLeft = turnStepperFlow->addTaskWithPositionReset(120);
         turnLeft->startByDate(20);
         
         CCTask* turnRight;
